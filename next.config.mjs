@@ -10,6 +10,9 @@ const nextConfig = {
   basePath: isProd ? `/${repo}` : '',
   assetPrefix: isProd ? `/${repo}/` : '',
   
+  // ensure folders instead of .html files (helps in some cases)
+  trailingSlash: true,
+  
   eslint: {
     ignoreDuringBuilds: true,
   },
