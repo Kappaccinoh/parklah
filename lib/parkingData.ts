@@ -290,4 +290,266 @@ export const parkingSpots: ParkingSpot[] = [
     ],
     tips: "First hour free with validation. Weekend parking can get crowded during events.",
   },
+  {
+    id: 11,
+    name: "Unauthorized - Jalan Raja Laut",
+    address: "Jalan Raja Laut, 50350",
+    lat: 3.16046,      // from findlatitudeandlongitude.com :contentReference[oaicite:0]{index=0}
+    lng: 101.695206,   // from findlatitudeandlongitude.com :contentReference[oaicite:1]{index=1}
+    capacity: 12,
+    pricePerHour: 0,
+    isLegal: false,
+    type: "illegal",
+    walkTime: 4,
+    peakHours: "8AM-6PM",
+    availabilityDescription: "Often available but high risk of summons",
+    findingProbability: 80,
+    trafficFrequency: [5,5,5,5,10,30,50,80,90,85,80,75,70,75,80,85,90,85,70,50,30,20,10,5],
+    entrances: [
+      { name: "Roadside", description: "Along Jalan Raja Laut – frequent patrols" }
+    ],
+    busyTimes: [
+      { time: "Morning (8AM-12PM)", status: "High Risk" },
+      { time: "Afternoon (12PM-6PM)", status: "High Risk" },
+      { time: "Evening (6PM-10PM)", status: "Moderate Risk" },
+      { time: "Night (10PM-12AM)", status: "Low Risk" },
+    ],
+    tips: "⚠️ Very risky—avoid during peak enforcement hours."
+  },
+  {
+    id: 12,
+    name: "Unauthorized - Jalan Ipoh",
+    address: "Jalan Ipoh, 51208",
+    lat: 3.174444,     // from pagenation.com :contentReference[oaicite:2]{index=2}
+    lng: 101.686111,   // from pagenation.com :contentReference[oaicite:3]{index=3}
+    capacity: 8,
+    pricePerHour: 0,
+    isLegal: false,
+    type: "illegal",
+    walkTime: 8,
+    peakHours: "7AM-5PM",
+    availabilityDescription: "Spots usually free but heavily monitored",
+    findingProbability: 60,
+    trafficFrequency: [10,10,10,10,15,25,40,60,75,80,85,80,75,70,65,70,75,80,70,50,30,20,15,10],
+    entrances: [
+      { name: "Side Alley", description: "Between Jalan Ipoh and Jalan Sultan Azlan Shah" }
+    ],
+    busyTimes: [
+      { time: "Morning (8AM-12PM)", status: "High Risk" },
+      { time: "Afternoon (12PM-6PM)", status: "High Risk" },
+      { time: "Evening (6PM-10PM)", status: "Low Risk" },
+      { time: "Night (10PM-12AM)", status: "Low Risk" },
+    ],
+    tips: "⚠️ Enforcement tends to slack off after 6PM but still use at your own risk."
+  },
+  {
+    id: 13,
+    name: "Unauthorized - Jalan Pudu (near Pudu Sentral)",
+    address: "Jalan Pudu, Pudu Sentral, 55100",
+    lat: 3.14556,      // from Pudu Sentral Wikipedia :contentReference[oaicite:4]{index=4}
+    lng: 101.70083,    // from Pudu Sentral Wikipedia :contentReference[oaicite:5]{index=5}
+    capacity: 10,
+    pricePerHour: 0,
+    isLegal: false,
+    type: "illegal",
+    walkTime: 3,
+    peakHours: "6AM-2PM",
+    availabilityDescription: "Rarely full but constant risk of summons",
+    findingProbability: 70,
+    trafficFrequency: [15,15,15,15,20,35,55,75,85,80,75,70,65,60,55,60,65,70,60,45,30,20,15,10],
+    entrances: [
+      { name: "Bus Terminal Side", description: "Between Pudu Sentral entrance and main road" }
+    ],
+    busyTimes: [
+      { time: "Morning (6AM-12PM)", status: "High Risk" },
+      { time: "Afternoon (12PM-6PM)", status: "Moderate Risk" },
+      { time: "Evening (6PM-10PM)", status: "Low Risk" },
+      { time: "Night (10PM-12AM)", status: "Low Risk" },
+    ],
+    tips: "⚠️ Summons officers patrol continuously—consider other options."
+  },
+  {
+    id: 14,
+    name: "Unauthorized - Jalan Sultan Ismail",
+    address: "Jalan Sultan Ismail, 50250",
+    lat: 3.1552829,    // from postcode.my :contentReference[oaicite:6]{index=6}
+    lng: 101.7053617,  // from postcode.my :contentReference[oaicite:7]{index=7}
+    capacity: 9,
+    pricePerHour: 0,
+    isLegal: false,
+    type: "illegal",
+    walkTime: 2,
+    peakHours: "9AM-7PM",
+    availabilityDescription: "Often empty but heavy fines apply",
+    findingProbability: 65,
+    trafficFrequency: [20,20,20,20,25,45,65,85,95,90,85,80,75,70,65,70,75,80,70,55,35,25,20,15],
+    entrances: [
+      { name: "Frontage", description: "Roadside near Grand Millennium Hotel" }
+    ],
+    busyTimes: [
+      { time: "Morning (8AM-12PM)", status: "High Risk" },
+      { time: "Afternoon (12PM-6PM)", status: "High Risk" },
+      { time: "Evening (6PM-10PM)", status: "Moderate Risk" },
+      { time: "Night (10PM-12AM)", status: "Low Risk" },
+    ],
+    tips: "⚠️ Fines here can exceed RM150—park elsewhere if possible."
+  },
+  {
+    id: 15,
+    name: "Unauthorized - Jalan Sultan Mohammed",
+    address: "Jalan Sultan Mohammed, 50050",
+    lat: 3.1418658,    // from postcode.my :contentReference[oaicite:8]{index=8}
+    lng: 101.6954367,  // from postcode.my :contentReference[oaicite:9]{index=9}
+    capacity: 7,
+    pricePerHour: 0,
+    isLegal: false,
+    type: "illegal",
+    walkTime: 5,
+    peakHours: "10AM-4PM",
+    availabilityDescription: "Frequent openings but patrols are regular",
+    findingProbability: 60,
+    trafficFrequency: [10,10,10,10,20,40,60,80,90,85,80,75,70,65,60,65,70,75,65,50,30,20,15,10],
+    entrances: [
+      { name: "Side Lane", description: "Opposite Central Market side street" }
+    ],
+    busyTimes: [
+      { time: "Morning (8AM-12PM)", status: "High Risk" },
+      { time: "Afternoon (12PM-6PM)", status: "High Risk" },
+      { time: "Evening (6PM-10PM)", status: "Moderate Risk" },
+      { time: "Night (10PM-12AM)", status: "Low Risk" },
+    ],
+    tips: "⚠️ Best avoided—central enforcement is strict in this area."
+  },
+
+
+  {
+    id: 16,
+    name: "Unauthorized - Jalan SS 2/1",
+    address: "Jalan SS 2/1, SS2, 47300 Petaling Jaya",
+    lat: 3.1112,        // from distancesfrom.com :contentReference[oaicite:0]{index=0}
+    lng: 101.6110,      // from distancesfrom.com :contentReference[oaicite:1]{index=1}
+    capacity: 10,
+    pricePerHour: 0,
+    isLegal: false,
+    type: "illegal",
+    walkTime: 5,
+    peakHours: "8AM-6PM",
+    availabilityDescription: "Often available but high risk of summons",
+    findingProbability: 80,
+    trafficFrequency: [5,5,5,5,10,20,40,80,90,85,80,75,70,75,80,85,90,85,70,50,30,20,10,5],
+    entrances: [
+      { name: "Roadside", description: "Along SS2/1 – frequent patrols" }
+    ],
+    busyTimes: [
+      { time: "Morning (8AM-12PM)", status: "High Risk" },
+      { time: "Afternoon (12PM-6PM)", status: "High Risk" },
+      { time: "Evening (6PM-10PM)", status: "Moderate Risk" },
+      { time: "Night (10PM-12AM)", status: "Low Risk" },
+    ],
+    tips: "⚠️ Very risky—avoid during peak enforcement hours."
+  },
+  {
+    id: 17,
+    name: "Unauthorized - Jalan 14/1",
+    address: "Jalan 14/1, Seksyen 14, 46100 Petaling Jaya",
+    lat: 3.1050201,     // from postcode.my :contentReference[oaicite:2]{index=2}
+    lng: 101.6369018,   // from postcode.my :contentReference[oaicite:3]{index=3}
+    capacity: 8,
+    pricePerHour: 0,
+    isLegal: false,
+    type: "illegal",
+    walkTime: 7,
+    peakHours: "7AM-5PM",
+    availabilityDescription: "Spots usually free but heavily monitored",
+    findingProbability: 60,
+    trafficFrequency: [10,10,10,10,15,25,40,60,75,80,85,80,75,70,65,70,75,80,70,50,30,20,15,10],
+    entrances: [
+      { name: "Side Lane", description: "Between Jalan 14/1 and Jalan 14/3" }
+    ],
+    busyTimes: [
+      { time: "Morning (8AM-12PM)", status: "High Risk" },
+      { time: "Afternoon (12PM-6PM)", status: "High Risk" },
+      { time: "Evening (6PM-10PM)", status: "Low Risk" },
+      { time: "Night (10PM-12AM)", status: "Low Risk" },
+    ],
+    tips: "⚠️ Enforcement tends to slack off after hours but still at your own risk."
+  },
+  {
+    id: 18,
+    name: "Unauthorized - Jalan Gasing",
+    address: "Jalan Gasing, 46000 Petaling Jaya",
+    lat: 3.0983,        // from postcode.my :contentReference[oaicite:4]{index=4}
+    lng: 101.652339,    // from postcode.my :contentReference[oaicite:5]{index=5}
+    capacity: 12,
+    pricePerHour: 0,
+    isLegal: false,
+    type: "illegal",
+    walkTime: 6,
+    peakHours: "9AM-7PM",
+    availabilityDescription: "Often empty but fines apply",
+    findingProbability: 65,
+    trafficFrequency: [20,20,20,20,25,45,65,85,95,90,85,80,75,70,65,70,75,80,70,55,35,25,20,15],
+    entrances: [
+      { name: "Roadside", description: "Opposite commercial shops – heavy patrols" }
+    ],
+    busyTimes: [
+      { time: "Morning (8AM-12PM)", status: "High Risk" },
+      { time: "Afternoon (12PM-6PM)", status: "High Risk" },
+      { time: "Evening (6PM-10PM)", status: "Moderate Risk" },
+      { time: "Night (10PM-12AM)", status: "Low Risk" },
+    ],
+    tips: "⚠️ Best avoided during office hours."
+  },
+  {
+    id: 19,
+    name: "Unauthorized - Jalan Templer",
+    address: "Jalan Templer, 46000 Petaling Jaya",
+    lat: 3.0878383,     // from postcode.my :contentReference[oaicite:6]{index=6}
+    lng: 101.6528161,   // from postcode.my :contentReference[oaicite:7]{index=7}
+    capacity: 7,
+    pricePerHour: 0,
+    isLegal: false,
+    type: "illegal",
+    walkTime: 8,
+    peakHours: "6AM-4PM",
+    availabilityDescription: "Frequent openings but patrols are regular",
+    findingProbability: 60,
+    trafficFrequency: [10,10,10,10,20,40,60,80,90,85,80,75,70,65,60,65,70,75,65,50,30,20,15,10],
+    entrances: [
+      { name: "Frontage", description: "Roadside near banks – vigilant enforcement" }
+    ],
+    busyTimes: [
+      { time: "Morning (8AM-12PM)", status: "High Risk" },
+      { time: "Afternoon (12PM-6PM)", status: "High Risk" },
+      { time: "Evening (6PM-10PM)", status: "Moderate Risk" },
+      { time: "Night (10PM-12AM)", status: "Low Risk" },
+    ],
+    tips: "⚠️ Summons often exceed RM100 here."
+  },
+  {
+    id: 20,
+    name: "Unauthorized - Jalan SS 21/1–62",
+    address: "Jalan SS 21/1–62, 47400 Petaling Jaya",
+    lat: 3.1367399,     // from postcode.my :contentReference[oaicite:8]{index=8}
+    lng: 101.6207152,   // from postcode.my :contentReference[oaicite:9]{index=9}
+    capacity: 9,
+    pricePerHour: 0,
+    isLegal: false,
+    type: "illegal",
+    walkTime: 4,
+    peakHours: "8AM-6PM",
+    availabilityDescription: "Rarely full but constant risk of summons",
+    findingProbability: 70,
+    trafficFrequency: [15,15,15,15,20,35,55,75,85,80,75,70,65,60,55,60,65,70,60,45,30,20,15,10],
+    entrances: [
+      { name: "Roadside", description: "Along SS21 – regular patrols" }
+    ],
+    busyTimes: [
+      { time: "Morning (8AM-12PM)", status: "High Risk" },
+      { time: "Afternoon (12PM-6PM)", status: "Moderate Risk" },
+      { time: "Evening (6PM-10PM)", status: "Low Risk" },
+      { time: "Night (10PM-12AM)", status: "Low Risk" },
+    ],
+    tips: "⚠️ Officers patrol continuously—consider legal alternatives."
+  }
 ];

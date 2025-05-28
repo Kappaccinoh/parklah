@@ -6,11 +6,12 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import GoogleMapComponent from "@/components/GoogleMap"
 import { NavigationSheet } from "@/components/NavigationSheet"
+import AnonymousMessaging from "@/components/AnonymousMessaging"
 import { parkingSpots, type ParkingSpot } from "@/lib/parkingData"
 import useGeolocation from "@/hooks/useGeolocation"
 import { calculateDistance, estimateTravelTime, formatDistance } from "@/lib/distanceUtils"
@@ -143,7 +144,7 @@ export default function ParkingFinderApp() {
 
   return (
     <div className="flex flex-col h-screen bg-background w-full max-w-md mx-auto overflow-hidden">
-      {/* Mobile Header */}
+        {/* Mobile Header */}
       <div className="flex items-center gap-2 p-2 border-b bg-white sticky top-0 z-20">
         <div className="flex-1 relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
@@ -161,6 +162,9 @@ export default function ParkingFinderApp() {
             </Button>
           </SheetTrigger>
           <SheetContent side="right" className="w-72">
+            <SheetHeader>
+              <SheetTitle>Filter Options</SheetTitle>
+            </SheetHeader>
             <div className={`p-3 overflow-y-auto transition-all duration-300 ${expandedView === 'list' ? 'h-[70vh]' : 'h-[40vh]'} md:h-auto`}>
               <div>
                 <label className="text-sm font-medium mb-2 block">Filter by Type</label>
@@ -171,14 +175,9 @@ export default function ParkingFinderApp() {
                   <SelectContent>
                     <SelectItem value="all">All Parking</SelectItem>
                     <SelectItem value="legal">Legal Only</SelectItem>
-                    <SelectItem value="illegal">Unauthorized Zones</SelectItem>
-                    <SelectItem value="high-chance">High Success Rate</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-              <Button onClick={() => setShowAnalytics(!showAnalytics)} variant="outline" className="w-full">
-                {showAnalytics ? "Hide" : "Show"} Insights
-              </Button>
             </div>
           </SheetContent>
         </Sheet>
@@ -451,6 +450,9 @@ export default function ParkingFinderApp() {
           </div>
         )}
       </div>
+      
+      {/* Anonymous Messaging System */}
+      <AnonymousMessaging />
     </div>
   )
 }
