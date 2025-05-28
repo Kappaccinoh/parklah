@@ -1,5 +1,6 @@
 const repo = 'parklah';
-const isProd = process.env.NODE_ENV === 'production';
+// Always use the repo path for static assets since we're deploying to GitHub Pages
+const isProd = true; // Force production mode for GitHub Pages
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -7,11 +8,16 @@ const nextConfig = {
   output: 'export',
 
   // when serving from GitHub Pages
-  basePath: isProd ? `/${repo}` : '',
-  assetPrefix: isProd ? `/${repo}/` : '',
+  basePath: `/${repo}`,
+  assetPrefix: `/${repo}/`,
   
   // ensure folders instead of .html files (helps in some cases)
   trailingSlash: true,
+  
+  // Add public runtime config for base path
+  publicRuntimeConfig: {
+    basePath: `/${repo}`,
+  },
   
   eslint: {
     ignoreDuringBuilds: true,
