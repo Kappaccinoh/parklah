@@ -10,6 +10,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import GoogleMapComponent from "@/components/GoogleMap"
+import { NavigationSheet } from "@/components/NavigationSheet"
 import { parkingSpots, type ParkingSpot } from "@/lib/parkingData"
 import useGeolocation from "@/hooks/useGeolocation"
 import { calculateDistance, estimateTravelTime, formatDistance } from "@/lib/distanceUtils"
@@ -29,6 +30,8 @@ export default function ParkingFinderApp() {
   const [showAnalytics, setShowAnalytics] = useState(false)
   const [mapLoaded, setMapLoaded] = useState(false)
   const [currentTime, setCurrentTime] = useState(new Date())
+  const [navigationOpen, setNavigationOpen] = useState(false)
+  const [expandedView, setExpandedView] = useState<'map' | 'list'>('map')
   
   // Get user's current location
   const userLocation = useGeolocation()
@@ -91,14 +94,14 @@ export default function ParkingFinderApp() {
     return "bg-red-500"
   }
 
-  const getProbabilityTextColor = (probability) => {
+  const getProbabilityTextColor = (probability: number) => {
     if (probability >= 70) return "text-green-600"
     if (probability >= 50) return "text-yellow-600"
     if (probability >= 30) return "text-orange-600"
     return "text-red-600"
   }
 
-  const getStatusColor = (status) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
       case "Low":
         return "text-green-600"
@@ -118,7 +121,7 @@ export default function ParkingFinderApp() {
   }
 
   // Calculate current success rate based on traffic frequency
-  const getCurrentSuccessRate = (spot) => {
+  const getCurrentSuccessRate = (spot: ParkingSpot) => {
     const currentHour = currentTime.getHours()
     const trafficLevel = spot.trafficFrequency[currentHour]
 
@@ -139,9 +142,9 @@ export default function ParkingFinderApp() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-background max-w-sm mx-auto">
+    <div className="flex flex-col h-screen bg-background w-full max-w-md mx-auto overflow-hidden">
       {/* Mobile Header */}
-      <div className="flex items-center gap-2 p-3 border-b bg-white">
+      <div className="flex items-center gap-2 p-2 border-b bg-white sticky top-0 z-20">
         <div className="flex-1 relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
           <Input
@@ -158,7 +161,7 @@ export default function ParkingFinderApp() {
             </Button>
           </SheetTrigger>
           <SheetContent side="right" className="w-72">
-            <div className="space-y-4 mt-6">
+            <div className={`p-3 overflow-y-auto transition-all duration-300 ${expandedView === 'list' ? 'h-[70vh]' : 'h-[40vh]'} md:h-auto`}>
               <div>
                 <label className="text-sm font-medium mb-2 block">Filter by Type</label>
                 <Select value={filterType} onValueChange={setFilterType}>
@@ -182,7 +185,9 @@ export default function ParkingFinderApp() {
       </div>
 
       {/* Google Maps Area */}
-      <div className="flex-1 relative bg-gray-100">
+      <div 
+        className={`relative bg-gray-100 transition-all duration-300 ${expandedView === 'map' ? 'h-[60vh]' : 'h-[20vh]'}`}
+      >
         <GoogleMapComponent 
           apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ''} 
           parkingSpots={filteredSpots} 
@@ -192,13 +197,25 @@ export default function ParkingFinderApp() {
         />
 
         {/* Floating Navigation Button */}
-        <Button className="absolute bottom-4 right-4 rounded-full w-12 h-12 shadow-lg" size="icon">
+        <Button className="absolute bottom-6 right-4 rounded-full w-12 h-12 shadow-lg" size="icon">
           <Navigation className="h-5 w-5" />
         </Button>
       </div>
 
       {/* Mobile Bottom Sheet */}
-      <div className="bg-white border-t max-h-80 overflow-y-auto">
+      <div className={`bg-white border-t overflow-y-auto transition-all duration-300 ${expandedView === 'list' ? 'flex-1 max-h-[80vh]' : 'max-h-80'}`}>
+        {/* Toggle View Button in Parking Knowledge Base */}
+        <div className="flex justify-between items-center p-2 sticky top-0 z-10 bg-white border-b">
+          <h3 className="font-medium text-sm">Parking Knowledge Base</h3>
+          <Button 
+            size="sm"
+            variant="ghost"
+            className="h-8"
+            onClick={() => setExpandedView(expandedView === 'map' ? 'list' : 'map')}
+          >
+            {expandedView === 'map' ? 'Show List' : 'Show Map'}
+          </Button>
+        </div>
         {selectedSpot ? (
           <div className="p-4">
             <div className="flex items-start justify-between mb-3">
@@ -365,11 +382,22 @@ export default function ParkingFinderApp() {
             )}
 
             <div className="flex gap-2">
-              <Button className="flex-1 h-9 text-sm">
+              <Button 
+                className="flex-1 h-9 text-sm"
+                onClick={() => setNavigationOpen(true)}
+              >
                 <Navigation className="w-4 h-4 mr-2" />
                 Navigate
               </Button>
             </div>
+            
+            {/* Navigation Sheet with directions and local images */}
+            <NavigationSheet 
+              open={navigationOpen} 
+              onOpenChange={setNavigationOpen} 
+              spot={selectedSpot} 
+              userLocation={userLocation}
+            />
           </div>
         ) : (
           <div className="p-4">
