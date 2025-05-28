@@ -29,35 +29,37 @@ type NavigationImagesType = {
   [key: string]: NavigationImage;
 };
 
+import { withBasePath } from '../lib/pathUtils';
+
 // Mock navigation instruction images for key turns and locations
 const navigationImages: NavigationImagesType = {
   // Use the local image for all locations
   'turn-jalan-bukit-bintang': {
-    url: '/Jalan_Alor_in_Kuala_Lumpur_during_Corona_virus_lockdown.jpg',
+    url: withBasePath('/Jalan_Alor_in_Kuala_Lumpur_during_Corona_virus_lockdown.jpg'),
     caption: 'Turn right onto Jalan Bukit Bintang',
     contributor: 'Local user: Ahmad',
     timestamp: '2 weeks ago'
   },
   'pavilion-entrance': {
-    url: '/Jalan_Alor_in_Kuala_Lumpur_during_Corona_virus_lockdown.jpg',
+    url: withBasePath('/Jalan_Alor_in_Kuala_Lumpur_during_Corona_virus_lockdown.jpg'),
     caption: 'Pavilion mall entrance - look for the parking sign',
     contributor: 'Local user: Sarah',
     timestamp: '1 month ago'
   },
   'klcc-approach': {
-    url: '/Jalan_Alor_in_Kuala_Lumpur_during_Corona_virus_lockdown.jpg',
+    url: withBasePath('/Jalan_Alor_in_Kuala_Lumpur_during_Corona_virus_lockdown.jpg'),
     caption: 'KLCC approach view - parking entrance ahead',
     contributor: 'Local user: Michael',
     timestamp: '3 weeks ago'
   },
   'times-square-entrance': {
-    url: '/Jalan_Alor_in_Kuala_Lumpur_during_Corona_virus_lockdown.jpg',
+    url: withBasePath('/Jalan_Alor_in_Kuala_Lumpur_during_Corona_virus_lockdown.jpg'),
     caption: 'Berjaya Times Square parking entrance',
     contributor: 'Local user: Aisha',
     timestamp: '2 months ago'
   },
   'uptown-damansara-junction': {
-    url: '/Jalan_Alor_in_Kuala_Lumpur_during_Corona_virus_lockdown.jpg',
+    url: withBasePath('/Jalan_Alor_in_Kuala_Lumpur_during_Corona_virus_lockdown.jpg'),
     caption: 'Junction to Uptown Damansara',
     contributor: 'Local user: Raj',
     timestamp: '1 week ago'
