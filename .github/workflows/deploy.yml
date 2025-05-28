@@ -14,7 +14,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
-      - run: npm ci --legacy-peer-deps
+      # Install dependencies and regenerate lock file
+      - run: npm install --legacy-peer-deps
       - run: npm run build
       # Next.js 13+ includes export in the build command when output is set to 'export'
       - name: Publish to GitHub Pages
