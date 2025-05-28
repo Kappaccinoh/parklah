@@ -4,6 +4,10 @@ on:
   push:
     branches: [ main ]
 
+# Add permissions for GitHub Actions
+permissions:
+  contents: write
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
