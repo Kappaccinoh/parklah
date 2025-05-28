@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { Search, Navigation, AlertTriangle, CheckCircle, Filter, Route, Clock, TrendingUp } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -9,151 +9,29 @@ import { Badge } from "@/components/ui/badge"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import GoogleMapComponent from "@/components/GoogleMap"
+import { parkingSpots, type ParkingSpot } from "@/lib/parkingData"
+import useGeolocation from "@/hooks/useGeolocation"
+import { calculateDistance, estimateTravelTime, formatDistance } from "@/lib/distanceUtils"
 
-// Mock data for parking spots in Malaysia (KL area) - Knowledge repository
-const parkingSpots = [
-  {
-    id: 1,
-    name: "Pavilion KL Parking",
-    address: "Jalan Bukit Bintang, Bukit Bintang",
-    lat: 3.149,
-    lng: 101.7101,
-    capacity: 200,
-    pricePerHour: 6,
-    isLegal: true,
-    type: "mall",
-    walkTime: 3,
-    peakHours: "10AM-10PM",
-    availabilityDescription: "Good chance of finding parking",
-    findingProbability: 75,
-    // Traffic frequency data (0-100, representing how busy the area is)
-    trafficFrequency: [20, 15, 10, 8, 12, 25, 45, 65, 80, 85, 90, 95, 85, 75, 70, 80, 85, 90, 85, 70, 55, 40, 30, 25],
-    entrances: [
-      { name: "Main Entrance", description: "Via Jalan Bukit Bintang" },
-      { name: "Side Entrance", description: "Via Jalan Raja Chulan" },
-    ],
-    busyTimes: [
-      { time: "Morning (8AM-12PM)", status: "Low" },
-      { time: "Afternoon (12PM-6PM)", status: "High" },
-      { time: "Evening (6PM-10PM)", status: "Very High" },
-      { time: "Night (10PM-12AM)", status: "Moderate" },
-    ],
-    tips: "Best to arrive before 11AM on weekends. Valet service available.",
-  },
-  {
-    id: 2,
-    name: "KLCC Suria Mall",
-    address: "Kuala Lumpur City Centre",
-    lat: 3.157,
-    lng: 101.7123,
-    capacity: 150,
-    pricePerHour: 8,
-    isLegal: true,
-    type: "mall",
-    walkTime: 7,
-    peakHours: "9AM-11PM",
-    availabilityDescription: "Limited spots available",
-    findingProbability: 25,
-    trafficFrequency: [15, 10, 8, 5, 10, 20, 40, 70, 85, 95, 98, 95, 90, 85, 80, 85, 90, 95, 90, 75, 60, 45, 30, 20],
-    entrances: [
-      { name: "Tower 1 Entrance", description: "Via Jalan Ampang" },
-      { name: "Mall Entrance", description: "Direct mall access" },
-    ],
-    busyTimes: [
-      { time: "Morning (8AM-12PM)", status: "Moderate" },
-      { time: "Afternoon (12PM-6PM)", status: "Very High" },
-      { time: "Evening (6PM-10PM)", status: "Very High" },
-      { time: "Night (10PM-12AM)", status: "Low" },
-    ],
-    tips: "Very crowded on weekends. Consider using public transport during peak hours.",
-  },
-  {
-    id: 3,
-    name: "Street Parking - Jalan Alor",
-    address: "Jalan Alor, Bukit Bintang",
-    lat: 3.1477,
-    lng: 101.7089,
-    capacity: 25,
-    pricePerHour: 3,
-    isLegal: true,
-    type: "street",
-    walkTime: 1,
-    peakHours: "6PM-12AM",
-    availabilityDescription: "Few spots, arrive early",
-    findingProbability: 35,
-    trafficFrequency: [10, 8, 5, 5, 8, 15, 25, 35, 40, 45, 50, 55, 60, 65, 70, 75, 85, 95, 90, 80, 70, 50, 30, 15],
-    entrances: [
-      { name: "From Jalan Bukit Bintang", description: "Turn right into Jalan Alor" },
-      { name: "From Jalan Changkat", description: "Direct access" },
-    ],
-    busyTimes: [
-      { time: "Morning (8AM-12PM)", status: "Low" },
-      { time: "Afternoon (12PM-6PM)", status: "Low" },
-      { time: "Evening (6PM-10PM)", status: "Very High" },
-      { time: "Night (10PM-2AM)", status: "High" },
-    ],
-    tips: "Food street gets very busy after 7PM. Limited spots, arrive early.",
-  },
-  {
-    id: 4,
-    name: "Unauthorized - Jalan P. Ramlee",
-    address: "Jalan P. Ramlee, Golden Triangle",
-    lat: 3.1515,
-    lng: 101.7108,
-    capacity: 15,
-    pricePerHour: 0,
-    isLegal: false,
-    type: "illegal",
-    walkTime: 2,
-    peakHours: "High risk during office hours",
-    availabilityDescription: "Risky but often available",
-    findingProbability: 80,
-    trafficFrequency: [5, 5, 5, 5, 10, 20, 40, 80, 90, 85, 80, 75, 70, 75, 80, 85, 90, 85, 70, 50, 30, 20, 10, 8],
-    entrances: [{ name: "Roadside", description: "⚠️ Risk of summons RM50-150" }],
-    busyTimes: [
-      { time: "Morning (8AM-12PM)", status: "High Risk" },
-      { time: "Afternoon (12PM-6PM)", status: "High Risk" },
-      { time: "Evening (6PM-10PM)", status: "Moderate Risk" },
-      { time: "Night (10PM-12AM)", status: "Low Risk" },
-    ],
-    tips: "⚠️ Not recommended. High chance of summons during business hours.",
-  },
-  {
-    id: 5,
-    name: "Times Square KL",
-    address: "Jalan Imbi, Bintang Walk",
-    lat: 3.1425,
-    lng: 101.7107,
-    capacity: 300,
-    pricePerHour: 5,
-    isLegal: true,
-    type: "mall",
-    walkTime: 5,
-    peakHours: "11AM-9PM",
-    availabilityDescription: "Plenty of spaces",
-    findingProbability: 90,
-    trafficFrequency: [15, 12, 10, 8, 12, 20, 35, 50, 60, 65, 70, 75, 70, 65, 60, 65, 70, 75, 70, 60, 45, 35, 25, 20],
-    entrances: [
-      { name: "Main Entrance", description: "Via Jalan Imbi" },
-      { name: "Back Entrance", description: "Via Jalan Kia Peng" },
-    ],
-    busyTimes: [
-      { time: "Morning (8AM-12PM)", status: "Low" },
-      { time: "Afternoon (12PM-6PM)", status: "Moderate" },
-      { time: "Evening (6PM-10PM)", status: "High" },
-      { time: "Night (10PM-12AM)", status: "Low" },
-    ],
-    tips: "Large capacity, usually has spaces available. Good backup option.",
-  },
-]
+// The parking spots data is now imported from lib/parkingData.ts
+
+// Interface for parking spots with distance data
+interface ParkingSpotWithDistance extends ParkingSpot {
+  distanceKm?: number;
+  estimatedDriveTimeMin?: number;
+}
 
 export default function ParkingFinderApp() {
-  const [selectedSpot, setSelectedSpot] = useState(null)
+  const [selectedSpot, setSelectedSpot] = useState<ParkingSpotWithDistance | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
   const [filterType, setFilterType] = useState("all")
   const [showAnalytics, setShowAnalytics] = useState(false)
   const [mapLoaded, setMapLoaded] = useState(false)
   const [currentTime, setCurrentTime] = useState(new Date())
+  
+  // Get user's current location
+  const userLocation = useGeolocation()
 
   useEffect(() => {
     // Simulate map loading
@@ -169,19 +47,44 @@ export default function ParkingFinderApp() {
     return () => clearInterval(interval)
   }, [])
 
-  const filteredSpots = parkingSpots.filter((spot) => {
-    const matchesSearch =
-      spot.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      spot.address.toLowerCase().includes(searchQuery.toLowerCase())
+  // Calculate distances and sort by nearest first
+  const spotsWithDistance: ParkingSpotWithDistance[] = useMemo(() => {
+    return parkingSpots.map(spot => {
+      // Calculate distance if user location is available
+      const distanceKm = calculateDistance(
+        userLocation.latitude,
+        userLocation.longitude,
+        spot.lat,
+        spot.lng
+      );
+      
+      // Estimate drive time in minutes
+      const estimatedDriveTimeMin = estimateTravelTime(distanceKm, 'driving');
+      
+      return {
+        ...spot,
+        distanceKm,
+        estimatedDriveTimeMin
+      };
+    }).sort((a, b) => {
+      // Sort by distance (nearest first)
+      return (a.distanceKm || 99999) - (b.distanceKm || 99999);
+    });
+  }, [userLocation.latitude, userLocation.longitude]);
+
+  // Filter spots based on search query and filter type
+  const filteredSpots = spotsWithDistance.filter((spot) => {
+    const matchesSearch = spot.name.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesFilter =
       filterType === "all" ||
       (filterType === "legal" && spot.isLegal) ||
-      (filterType === "illegal" && !spot.isLegal) ||
-      (filterType === "high-chance" && spot.findingProbability >= 70)
+      (filterType === "street" && spot.type === "street") ||
+      (filterType === "mall" && spot.type === "mall")
+
     return matchesSearch && matchesFilter
   })
 
-  const getProbabilityColor = (probability) => {
+  const getProbabilityColor = (probability: number) => {
     if (probability >= 70) return "bg-green-500"
     if (probability >= 50) return "bg-yellow-500"
     if (probability >= 30) return "bg-orange-500"
@@ -280,71 +183,13 @@ export default function ParkingFinderApp() {
 
       {/* Google Maps Area */}
       <div className="flex-1 relative bg-gray-100">
-        {!mapLoaded ? (
-          <div className="absolute inset-0 bg-gray-200 flex items-center justify-center">
-            <div className="text-center space-y-2">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-              <div className="text-sm text-gray-600">Loading Google Maps...</div>
-            </div>
-          </div>
-        ) : (
-          <>
-            {/* Simulated Google Maps Interface */}
-            <div className="absolute inset-0 bg-gradient-to-br from-green-100 via-blue-50 to-gray-100">
-              {/* Map Controls */}
-              <div className="absolute top-3 right-3 flex flex-col gap-2">
-                <Button size="icon" variant="outline" className="h-8 w-8 bg-white">
-                  <span className="text-xs">+</span>
-                </Button>
-                <Button size="icon" variant="outline" className="h-8 w-8 bg-white">
-                  <span className="text-xs">-</span>
-                </Button>
-              </div>
-
-              {/* Current Location */}
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                <div className="w-4 h-4 bg-blue-600 rounded-full border-2 border-white shadow-lg"></div>
-              </div>
-
-              {/* Parking Spots on Map */}
-              {filteredSpots.map((spot, index) => {
-                const currentSuccessRate = getCurrentSuccessRate(spot)
-                return (
-                  <div
-                    key={spot.id}
-                    className={`absolute pointer-events-auto cursor-pointer transform -translate-x-1/2 -translate-y-1/2 transition-all ${
-                      selectedSpot?.id === spot.id ? "scale-125 z-10" : "z-0"
-                    }`}
-                    style={{
-                      left: `${25 + index * 15}%`,
-                      top: `${25 + index * 12}%`,
-                    }}
-                    onClick={() => setSelectedSpot(spot)}
-                  >
-                    <div
-                      className={`w-8 h-8 rounded-full border-2 border-white shadow-lg flex items-center justify-center text-xs font-bold ${getProbabilityColor(
-                        currentSuccessRate,
-                      )} text-white`}
-                    >
-                      {spot.walkTime}m
-                    </div>
-                    {selectedSpot?.id === spot.id && (
-                      <div className="absolute top-9 left-1/2 transform -translate-x-1/2 bg-white rounded-lg shadow-lg p-2 min-w-32 text-center">
-                        <div className="text-xs font-medium">{spot.name}</div>
-                        <div className="text-xs text-gray-600">RM{spot.pricePerHour}/hr</div>
-                      </div>
-                    )}
-                  </div>
-                )
-              })}
-
-              {/* Google Maps Style Attribution */}
-              <div className="absolute bottom-2 left-2 text-xs text-gray-600 bg-white px-2 py-1 rounded">
-                Map data ©2024 Google
-              </div>
-            </div>
-          </>
-        )}
+        <GoogleMapComponent 
+          apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ''} 
+          parkingSpots={filteredSpots} 
+          selectedSpotId={selectedSpot?.id} 
+          onSpotSelect={(spot) => setSelectedSpot(spot as ParkingSpotWithDistance)}
+          userLocation={userLocation} 
+        />
 
         {/* Floating Navigation Button */}
         <Button className="absolute bottom-4 right-4 rounded-full w-12 h-12 shadow-lg" size="icon">
@@ -530,7 +375,7 @@ export default function ParkingFinderApp() {
           <div className="p-4">
             <h3 className="font-semibold mb-3 text-sm">Parking Knowledge Base</h3>
             <div className="space-y-2">
-              {filteredSpots.slice(0, 4).map((spot) => (
+              {filteredSpots.map((spot) => (
                 <Card
                   key={spot.id}
                   className="cursor-pointer hover:shadow-md transition-shadow"
@@ -551,7 +396,14 @@ export default function ParkingFinderApp() {
                               Risk
                             </Badge>
                           )}
-                          <span className="text-xs text-muted-foreground">{spot.walkTime}min</span>
+                          {userLocation.latitude ? (
+                            <span className="text-xs text-muted-foreground">
+                              <Route className="h-3 w-3 inline mr-1" />
+                              {formatDistance(spot.distanceKm || 0)} • {spot.estimatedDriveTimeMin}min
+                            </span>
+                          ) : (
+                            <span className="text-xs text-muted-foreground">{spot.walkTime}min walk</span>
+                          )}
                         </div>
                         <div className="text-xs text-gray-600">{spot.availabilityDescription}</div>
                       </div>
