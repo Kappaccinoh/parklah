@@ -8,15 +8,15 @@ const nextConfig = {
   output: 'export',
 
   // when serving from GitHub Pages
-  basePath: `/${repo}`,
-  assetPrefix: `/${repo}/`,
+  basePath: isProd ? `/${repo}` : '',
+  assetPrefix: isProd ? `/${repo}/` : '',
   
   // ensure folders instead of .html files (helps in some cases)
   trailingSlash: true,
   
   // Add public runtime config for base path
   publicRuntimeConfig: {
-    basePath: `/${repo}`,
+    basePath: isProd ? `/${repo}` : '',
   },
   
   eslint: {

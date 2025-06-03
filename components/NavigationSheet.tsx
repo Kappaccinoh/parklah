@@ -16,113 +16,14 @@ import { Separator } from '@/components/ui/separator';
 import { CarFront, Clock, PersonStanding, Train, X, ChevronRight, ChevronDown, Info } from 'lucide-react';
 import Image from 'next/image';
 import { formatDistance } from '@/lib/distanceUtils';
-
-// Type definition for navigation images
-type NavigationImage = {
-  url: string;
-  caption: string;
-  contributor: string;
-  timestamp: string;
-};
-
-type NavigationImagesType = {
-  [key: string]: NavigationImage;
-};
-
 import { withBasePath } from '../lib/pathUtils';
-
-// Mock navigation instruction images for key turns and locations
-const navigationImages: NavigationImagesType = {
-  // Use the local image for all locations
-  'turn-jalan-bukit-bintang': {
-    url: withBasePath('/Jalan_Alor_in_Kuala_Lumpur_during_Corona_virus_lockdown.jpg'),
-    caption: 'Turn right onto Jalan Bukit Bintang',
-    contributor: 'Local user: Ahmad',
-    timestamp: '2 weeks ago'
-  },
-  'pavilion-entrance': {
-    url: withBasePath('/Jalan_Alor_in_Kuala_Lumpur_during_Corona_virus_lockdown.jpg'),
-    caption: 'Pavilion mall entrance - look for the parking sign',
-    contributor: 'Local user: Sarah',
-    timestamp: '1 month ago'
-  },
-  'klcc-approach': {
-    url: withBasePath('/Jalan_Alor_in_Kuala_Lumpur_during_Corona_virus_lockdown.jpg'),
-    caption: 'KLCC approach view - parking entrance ahead',
-    contributor: 'Local user: Michael',
-    timestamp: '3 weeks ago'
-  },
-  'times-square-entrance': {
-    url: withBasePath('/Jalan_Alor_in_Kuala_Lumpur_during_Corona_virus_lockdown.jpg'),
-    caption: 'Berjaya Times Square parking entrance',
-    contributor: 'Local user: Aisha',
-    timestamp: '2 months ago'
-  },
-  'uptown-damansara-junction': {
-    url: withBasePath('/Jalan_Alor_in_Kuala_Lumpur_during_Corona_virus_lockdown.jpg'),
-    caption: 'Junction to Uptown Damansara',
-    contributor: 'Local user: Raj',
-    timestamp: '1 week ago'
-  }
-};
-
-// Map parking spot names to relevant image keys
-const spotToImageKeys: {[key: string]: string[]} = {
-  'Pavilion KL Parking': ['turn-jalan-bukit-bintang', 'pavilion-entrance'],
-  'KLCC Suria Mall Parking': ['klcc-approach'],
-  'Berjaya Times Square Parking': ['times-square-entrance'],
-  'Starling Mall Parking': ['uptown-damansara-junction'],
-  'Uptown Street Parking': ['uptown-damansara-junction'],
-};
-
-// Type definition for direction steps
-type DirectionStep = {
-  instruction: string;
-  distance: number;
-  time: number;
-  isKey: boolean;
-  imageKey?: string | null;
-};
-
-// Type for direction modes
-type DirectionModes = {
-  [key: string]: DirectionStep[]
-};
-
-// Get different directions based on travel mode
-const getMockDirections = (spotName: string, travelMode: string): DirectionStep[] => {
-  // In a real implementation, this would be fetched from a directions API
-  
-  // Define direction sets for each mode
-  const directions: DirectionModes = {
-    driving: [
-      { instruction: 'Exit current location to main road', distance: 0.2, time: 1, isKey: false },
-      { instruction: 'Turn right onto Jalan Raja Chulan', distance: 0.8, time: 3, isKey: false },
-      { instruction: 'Continue onto Jalan Bukit Bintang', distance: 0.5, time: 4, isKey: true, imageKey: 'turn-jalan-bukit-bintang' },
-      { instruction: 'Turn left into parking entrance', distance: 0.1, time: 1, isKey: true, imageKey: spotToImageKeys[spotName]?.[1] || null },
-      { instruction: 'Proceed to B2 for available spots', distance: 0.1, time: 2, isKey: false },
-      { instruction: 'Arrive at destination', distance: 0, time: 0, isKey: false }
-    ],
-    walking: [
-      { instruction: 'Walk east toward main street', distance: 0.1, time: 2, isKey: false },
-      { instruction: 'Cross at pedestrian crossing', distance: 0.05, time: 1, isKey: true },
-      { instruction: 'Walk along Jalan Bukit Bintang', distance: 0.4, time: 5, isKey: false },
-      { instruction: 'Pass by street vendors on right', distance: 0.2, time: 3, isKey: true, imageKey: 'turn-jalan-bukit-bintang' },
-      { instruction: 'Enter via pedestrian entrance', distance: 0.05, time: 1, isKey: true, imageKey: spotToImageKeys[spotName]?.[0] || null },
-      { instruction: 'Arrive at destination', distance: 0, time: 0, isKey: false }
-    ],
-    transit: [
-      { instruction: 'Walk to nearest LRT station', distance: 0.3, time: 4, isKey: false },
-      { instruction: 'Take Kelana Jaya Line toward KLCC', distance: 2.5, time: 8, isKey: true },
-      { instruction: 'Exit at Bukit Bintang station', distance: 0.1, time: 2, isKey: true, imageKey: 'turn-jalan-bukit-bintang' },
-      { instruction: 'Walk along pedestrian bridge', distance: 0.2, time: 3, isKey: false },
-      { instruction: 'Enter via main entrance', distance: 0.1, time: 2, isKey: true, imageKey: spotToImageKeys[spotName]?.[0] || null },
-      { instruction: 'Arrive at destination', distance: 0, time: 0, isKey: false }
-    ]
-  }
-  
-  return directions[travelMode] || directions.driving;
-};
+import { 
+  NavigationImage, 
+  NavigationImagesType, 
+  DirectionStep,
+  navigationImages, 
+  getDirections 
+} from '@/lib/directions';
 
 interface NavigationSheetProps {
   open: boolean;
@@ -149,9 +50,10 @@ export function NavigationSheet({ open, onOpenChange, spot, userLocation }: Navi
   const [directions, setDirections] = useState<any[]>([]);
   const [expandedSteps, setExpandedSteps] = useState<number[]>([]);
   
+  // Get the current directions based on travel mode and spot ID
   const directionsData = useMemo(() => {
     if (!spot) return []
-    return getMockDirections(spot.name, travelMode)
+    return getDirections(spot.id, spot.name, travelMode);
   }, [spot, travelMode]);
 
   useEffect(() => {

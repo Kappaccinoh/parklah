@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import BasePathProvider from "./BasePath"
+import MobileWrapper from "@/components/MobileWrapper"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -26,7 +27,9 @@ export default function RootLayout({
       <body className={inter.className}>
         {/* Client component that sets the base href dynamically */}
         <BasePathProvider />
-        <div className="min-h-screen bg-gray-50">{children}</div>
+        <MobileWrapper>
+          <div className="min-h-screen bg-gray-50">{children}</div>
+        </MobileWrapper>
       </body>
     </html>
   )

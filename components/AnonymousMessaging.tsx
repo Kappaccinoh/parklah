@@ -104,10 +104,10 @@ export function AnonymousMessaging() {
   
   return (
     <>
-      {/* Menu Button */}
-      <div className="relative inline-block">
+      {/* Menu Buttons - using absolute positioning with bottom padding on parent element to ensure visibility */}
+      <div className="app-button-container">
         <Button 
-          className="fixed left-4 bottom-4 rounded-full h-10 px-4 shadow-lg" 
+          className="app-button app-button-left" 
           variant="default"
           onClick={() => setIsMessageDialogOpen(true)}
         >
@@ -121,7 +121,7 @@ export function AnonymousMessaging() {
         </Button>
         
         <Button 
-          className="fixed right-4 bottom-4 rounded-full h-10 px-4 shadow-lg" 
+          className="app-button app-button-right" 
           variant="secondary"
           onClick={() => setIsQRScannerOpen(true)}
         >

@@ -92,3 +92,61 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* Custom phone frame shadow effects for desktop view */
+.shadow-phone {
+  box-shadow: 0px 25px 50px -12px rgba(0, 0, 0, 0.25),
+              0px 0px 15px 0px rgba(0, 0, 0, 0.1),
+              0px 0px 0px 1px rgba(255, 255, 255, 0.1) inset;
+}
+
+/* Add scrollbar styling for the mobile container */
+.overflow-y-auto::-webkit-scrollbar {
+  width: 4px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 20px;
+}
+
+/* Mobile container to properly contain fixed/absolute positioned elements */
+.mobile-container {
+  position: relative;
+  overflow: hidden;
+}
+
+/* App button container for correct positioning */
+.app-button-container {
+  position: relative;
+  z-index: 30;
+}
+
+/* Base button styles for app buttons */
+.app-button {
+  position: absolute;
+  bottom: 1rem; /* Default position for mobile */
+  height: 2.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  border-radius: 9999px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Special button positioning just for the desktop mobile container */
+.mobile-container .app-button {
+  bottom: 6rem; /* Higher positioning specifically in desktop view */
+}
+
+/* Left and right positioning */
+.app-button-left {
+  left: 1rem;
+}
+
+.app-button-right {
+  right: 1rem;
+}

@@ -551,5 +551,99 @@ export const parkingSpots: ParkingSpot[] = [
       { time: "Night (10PM-12AM)", status: "Low Risk" },
     ],
     tips: "⚠️ Officers patrol continuously—consider legal alternatives."
+  },
+  {
+    id: 21,
+    name: "Outdoor Parking - Kampung Pandan",
+    address: "Kampung Pandan, 55100 Kuala Lumpur",
+    lat: 3.125306,     // from 3°07'31.1"N
+    lng: 101.673972,   // from 101°40'26.3"E
+    capacity: 30,
+    pricePerHour: 2,
+    isLegal: true,
+    type: "outdoor",
+    walkTime: 5,
+    peakHours: "7AM-8PM",
+    availabilityDescription: "Open parking area with moderate availability",
+    findingProbability: 65,
+    trafficFrequency: [15,15,15,20,35,55,70,85,80,75,70,65,60,65,70,75,80,75,65,50,40,30,20,15],
+    entrances: [
+      { name: "Main Entrance", description: "Via main road" }
+    ],
+    busyTimes: [
+      { time: "Morning (8AM-12PM)", status: "Moderate" },
+      { time: "Afternoon (12PM-6PM)", status: "High" },
+      { time: "Evening (6PM-10PM)", status: "Moderate" },
+      { time: "Night (10PM-12AM)", status: "Low" },
+    ],
+    tips: "Good alternative to mall parking. Images available in place1 folder."
+  },
+  {
+    id: 22,
+    name: "Kampung Pandan Roadside Parking",
+    address: "Jalan Kampung Pandan Dalam, Kampung Pandan Dalam, 55100 Kuala Lumpur",
+    lat: 3.1235934,
+    lng: 101.6729305,
+    capacity: 20,
+    pricePerHour: 2,
+    isLegal: true,
+    type: "street",
+    walkTime: 3,
+    peakHours: "7:30 AM - 9:30 AM, 5:00 PM - 7:00 PM",
+    availabilityDescription: "Moderate availability on weekdays, high on weekends",
+    findingProbability: 80,
+    trafficFrequency: [60, 80, 90, 70, 60, 40, 30],
+    entrances: [
+      {
+        name: "Main Roadside Zone",
+        description: "Legal street parking along Kampung Pandan Dalam road with clear road markings"
+      },
+      {
+        name: "Secondary Zone",
+        description: "Additional spaces available behind the shops"
+      }
+    ],
+    busyTimes: [
+      { time: "Morning (8AM-10AM)", status: "High occupancy" },
+      { time: "Afternoon (12PM-2PM)", status: "Moderate occupancy" },
+      { time: "Evening (6PM-8PM)", status: "High occupancy" },
+      { time: "Late night (10PM-12AM)", status: "Low occupancy" }
+    ],
+    tips: "Payment is required using the parking machines along the roadside. Display ticket clearly on dashboard."
+  },
+  
+  // New spot 3 - Entier French Dining Parking (ID: 23)
+  {
+    id: 23,
+    name: "Entier French Dining Parking",
+    address: "Level 41, Alila Bangsar, 58, Jalan Ang Seng, Brickfields, 59000 Kuala Lumpur",
+    lat: 3.1294112,
+    lng: 101.6785058,
+    capacity: 40,
+    pricePerHour: 0, // Fixed daily rate of RM12 per entry, not hourly
+    isLegal: true,
+    type: "structure",
+    walkTime: 2,
+    peakHours: "7:00 PM - 10:00 PM",
+    availabilityDescription: "Good availability during weekdays, limited during weekend dinner times",
+    findingProbability: 85,
+    trafficFrequency: [50, 60, 70, 85, 95, 80, 70],
+    entrances: [
+      {
+        name: "Main Entrance",
+        description: "Enter through Alila Bangsar hotel main entrance and take the elevator to the parking levels"
+      },
+      {
+        name: "Parking Level Entry",
+        description: "Direct entry to parking structure from Jalan Ang Seng"
+      }
+    ],
+    busyTimes: [
+      { time: "Morning (8AM-11AM)", status: "Low occupancy" },
+      { time: "Afternoon (12PM-2PM)", status: "Moderate occupancy" },
+      { time: "Evening (6PM-9PM)", status: "High occupancy" },
+      { time: "Late night (10PM-12AM)", status: "Moderate occupancy" }
+    ],
+    tips: "Fixed rate of RM12 per entry per day. Validate your parking ticket at the restaurant for discounted rates."
   }
 ];
