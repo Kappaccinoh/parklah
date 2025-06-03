@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
+  <!-- Background circle -->
+  <circle cx="96" cy="96" r="92" fill="#0066cc" />
+  <!-- Letter P -->
+  <path d="M62 48h40c16 0 28 13 28 28s-12 28-28 28H82v40H62V48zm20 20v16h20c4.4 0 8-3.6 8-8s-3.6-8-8-8H82z" fill="white" />
+  <!-- Subtle car silhouette at bottom -->
+  <path d="M48 144c0-4.4 3.6-8 8-8h80c4.4 0 8 3.6 8 8v8H48v-8z" fill="rgba(255,255,255,0.3)" />
+</svg>

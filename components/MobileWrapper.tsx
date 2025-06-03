@@ -43,7 +43,7 @@ export default function MobileWrapper({ children }: MobileWrapperProps) {
           }}
         >
           {/* App content with extra padding at bottom for repositioned buttons - no overflow scrolling */}
-          <div className="h-full overflow-hidden pb-20">
+          <div className={`h-full overflow-hidden`}>
             {children}
           </div>
         </div>

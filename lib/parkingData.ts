@@ -592,7 +592,7 @@ export const parkingSpots: ParkingSpot[] = [
     peakHours: "7:30 AM - 9:30 AM, 5:00 PM - 7:00 PM",
     availabilityDescription: "Moderate availability on weekdays, high on weekends",
     findingProbability: 80,
-    trafficFrequency: [60, 80, 90, 70, 60, 40, 30],
+    trafficFrequency: [20, 15, 10, 10, 15, 20, 30, 60, 80, 90, 85, 75, 70, 65, 60, 55, 50, 45, 40, 35, 30, 25, 22, 20],
     entrances: [
       {
         name: "Main Roadside Zone",
@@ -612,30 +612,30 @@ export const parkingSpots: ParkingSpot[] = [
     tips: "Payment is required using the parking machines along the roadside. Display ticket clearly on dashboard."
   },
   
-  // New spot 3 - Entier French Dining Parking (ID: 23)
+  // New spot 3 - Lorong Abdullah Parking (ID: 23)
   {
     id: 23,
-    name: "Entier French Dining Parking",
-    address: "Level 41, Alila Bangsar, 58, Jalan Ang Seng, Brickfields, 59000 Kuala Lumpur",
-    lat: 3.1294112,
-    lng: 101.6785058,
+    name: "12, Lorong Abdullah Parking",
+    address: "12, Lorong Abdullah, Bangsar, 59000 Kuala Lumpur",
+    lat: 3.1289567,
+    lng: 101.6766321,
     capacity: 40,
     pricePerHour: 0, // Fixed daily rate of RM12 per entry, not hourly
     isLegal: true,
     type: "structure",
     walkTime: 2,
-    peakHours: "7:00 PM - 10:00 PM",
-    availabilityDescription: "Good availability during weekdays, limited during weekend dinner times",
+    peakHours: "8:00 AM - 11:00 AM, 6:00 PM - 9:00 PM",
+    availabilityDescription: "Good availability during off-peak hours, limited during morning and evening peak times",
     findingProbability: 85,
-    trafficFrequency: [50, 60, 70, 85, 95, 80, 70],
+    trafficFrequency: [25, 20, 15, 10, 15, 20, 30, 40, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 90, 85, 70, 55, 40, 30],
     entrances: [
       {
         name: "Main Entrance",
-        description: "Enter through Alila Bangsar hotel main entrance and take the elevator to the parking levels"
+        description: "Enter from Lorong Abdullah street entrance"
       },
       {
-        name: "Parking Level Entry",
-        description: "Direct entry to parking structure from Jalan Ang Seng"
+        name: "Back Entry",
+        description: "Alternative entry from the rear of the building accessible from Jalan Ara"
       }
     ],
     busyTimes: [
@@ -644,6 +644,6 @@ export const parkingSpots: ParkingSpot[] = [
       { time: "Evening (6PM-9PM)", status: "High occupancy" },
       { time: "Late night (10PM-12AM)", status: "Moderate occupancy" }
     ],
-    tips: "Fixed rate of RM12 per entry per day. Validate your parking ticket at the restaurant for discounted rates."
+    tips: "Fixed rate of RM12 per entry per day. Pay at the automated machine before leaving."
   }
 ];

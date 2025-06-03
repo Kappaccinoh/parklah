@@ -11,12 +11,9 @@ import {
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
-import { CarFront, Clock, PersonStanding, Train, X, ChevronRight, ChevronDown, Info } from 'lucide-react';
-import Image from 'next/image';
+import { Card, CardContent } from '@/components/ui/card';
+import { CarFront, Clock, PersonStanding, Train, ChevronRight, ChevronDown, Info } from 'lucide-react';
 import { formatDistance } from '@/lib/distanceUtils';
-import { withBasePath } from '../lib/pathUtils';
 import { 
   NavigationImage, 
   NavigationImagesType, 

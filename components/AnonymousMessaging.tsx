@@ -104,30 +104,32 @@ export function AnonymousMessaging() {
   
   return (
     <>
-      {/* Menu Buttons - using absolute positioning with bottom padding on parent element to ensure visibility */}
-      <div className="app-button-container">
-        <Button 
-          className="app-button app-button-left" 
-          variant="default"
-          onClick={() => setIsMessageDialogOpen(true)}
-        >
-          <MessageSquare size={16} className="mr-2" />
-          <span className="text-xs">Messages</span>
-          {unreadCount > 0 && (
-            <Badge className="absolute -top-2 -right-2 bg-red-500 h-5 w-5 flex items-center justify-center p-0">
-              {unreadCount}
-            </Badge>
-          )}
-        </Button>
-        
-        <Button 
-          className="app-button app-button-right" 
-          variant="secondary"
-          onClick={() => setIsQRScannerOpen(true)}
-        >
-          <QrCode size={16} className="mr-2" />
-          <span className="text-xs">Scan QR</span>
-        </Button>
+      {/* Menu Buttons - using fixed positioning container for visibility on all screens */}
+      <div className={`app-button-container`}>
+        <div className="flex justify-between">
+          <Button 
+            className="app-button app-button-left" 
+            variant="default"
+            onClick={() => setIsMessageDialogOpen(true)}
+          >
+            <MessageSquare size={16} className="mr-2" />
+            <span className="text-xs">Messages</span>
+            {unreadCount > 0 && (
+              <Badge className="absolute -top-2 -right-2 bg-red-500 h-5 w-5 flex items-center justify-center p-0">
+                {unreadCount}
+              </Badge>
+            )}
+          </Button>
+          
+          <Button 
+            className="app-button app-button-right" 
+            variant="secondary"
+            onClick={() => setIsQRScannerOpen(true)}
+          >
+            <QrCode size={16} className="mr-2" />
+            <span className="text-xs">Scan QR</span>
+          </Button>
+        </div>
       </div>
       
       {/* QR Scanner Dialog - Fullscreen on Mobile */}

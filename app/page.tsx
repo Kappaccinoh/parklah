@@ -216,7 +216,7 @@ export default function ParkingFinderApp() {
           </Button>
         </div>
         {selectedSpot ? (
-          <div className="p-4">
+          <div className="p-4 mb-20">
             <div className="flex items-start justify-between mb-3">
               <div className="flex-1">
                 <h3 className="font-semibold text-base">{selectedSpot.name}</h3>
@@ -291,7 +291,7 @@ export default function ParkingFinderApp() {
 
                 {/* Current Time Indicator */}
                 <div
-                  className="absolute top-0 bottom-0 w-0.5 bg-red-500 z-10"
+                  className="absolute top-0 bottom-0 w-0.5 bg-red-500 z-[5]"
                   style={{ left: `${getCurrentTimePosition()}%` }}
                 >
                   <div className="absolute -top-1 -left-1 w-2 h-2 bg-red-500 rounded-full"></div>
@@ -401,7 +401,7 @@ export default function ParkingFinderApp() {
         ) : (
           <div className="p-4">
             <h3 className="font-semibold mb-3 text-sm">Parking Knowledge Base</h3>
-            <div className="space-y-2">
+            <div className="space-y-2 mb-20">
               {filteredSpots.map((spot) => (
                 <Card
                   key={spot.id}
