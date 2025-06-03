@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
+  <!-- Background -->
+  <rect width="180" height="180" rx="40" fill="#0066cc" />
+  <!-- Letter P -->
+  <path d="M55 45h45c18 0 30 15 30 30s-12 30-30 30H85v30H55V45zm30 20v20h15c5.5 0 10-4.5 10-10s-4.5-10-10-10H85z" fill="white" />
+  <!-- Subtle car/parking silhouette -->
+  <path d="M45 135c0-5.5 4.5-10 10-10h70c5.5 0 10 4.5 10 10v10H45v-10z" fill="rgba(255,255,255,0.3)" />
+</svg>
