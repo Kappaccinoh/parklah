@@ -400,7 +400,6 @@ export default function ParkingFinderApp() {
           </div>
         ) : (
           <div className="p-4">
-            <h3 className="font-semibold mb-3 text-sm">Parking Knowledge Base</h3>
             <div className="space-y-2 mb-20">
               {filteredSpots.map((spot) => (
                 <Card
