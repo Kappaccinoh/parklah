@@ -2,6 +2,7 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
+import { SubscriptionProvider } from "@/lib/subscriptionContext"
 import BasePathProvider from "./BasePath"
 import MobileWrapper from "@/components/MobileWrapper"
 
@@ -31,9 +32,11 @@ export default function RootLayout({
       <body className={inter.className}>
         {/* Client component that sets the base href dynamically */}
         <BasePathProvider />
-        <MobileWrapper>
-          <div className="min-h-screen bg-gray-50">{children}</div>
-        </MobileWrapper>
+        <SubscriptionProvider>
+          <MobileWrapper>
+            <div className="min-h-screen bg-gray-50">{children}</div>
+          </MobileWrapper>
+        </SubscriptionProvider>
       </body>
     </html>
   )

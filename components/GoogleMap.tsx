@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useRef, useMemo } from 'react';
-import { GoogleMap, useJsApiLoader, Marker, InfoWindow } from '@react-google-maps/api';
+import { GoogleMap, useJsApiLoader, Marker, InfoWindow, OverlayView } from '@react-google-maps/api';
+import ValetBadgeIcon from './icons/ValetBadgeIcon';
 
 // Default map container style
 const containerStyle = {
@@ -31,6 +32,9 @@ interface ParkingSpot {
   pricePerHour: number;
   walkTime: number;
   isLegal: boolean;
+  hasValetService?: boolean;
+  valetPartner?: string;
+  valetBaseRate?: number;
   // Add other properties as needed
 }
 
@@ -39,6 +43,7 @@ interface MapProps {
   parkingSpots: ParkingSpot[];
   selectedSpotId?: number | null;
   onSpotSelect?: (spot: ParkingSpot) => void;
+  onValetSelect?: (spot: ParkingSpot) => void;
   userLocation?: {
     latitude: number | null;
     longitude: number | null;
@@ -52,6 +57,7 @@ const GoogleMapComponent: React.FC<MapProps> = ({
   parkingSpots, 
   selectedSpotId,
   onSpotSelect,
+  onValetSelect,
   userLocation
 }) => {
   // Use user location as center when available
@@ -83,6 +89,15 @@ const GoogleMapComponent: React.FC<MapProps> = ({
     const spot = parkingSpots.find(s => s.id === spotId);
     if (spot && onSpotSelect) {
       onSpotSelect(spot);
+    }
+  };
+
+  // Handle valet badge click - separate from marker click to allow direct access to valet booking
+  const handleValetClick = (spotId: number, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent triggering the main marker click
+    const spot = parkingSpots.find(s => s.id === spotId);
+    if (spot && onValetSelect && spot.hasValetService) {
+      onValetSelect(spot);
     }
   };
 
@@ -147,14 +162,36 @@ const GoogleMapComponent: React.FC<MapProps> = ({
       
       {/* Parking spot markers */}
       {parkingSpots.map((spot) => (
-        <Marker
-          key={spot.id}
-          position={{ lat: spot.lat, lng: spot.lng }}
-          onClick={() => handleMarkerClick(spot.id)}
-          // @ts-ignore - icon typing issue with the Google Maps API
-          icon={getParkingMarkerIcon(spot)}
-          animation={spot.id === selectedSpotId ? google.maps.Animation.BOUNCE : undefined}
-        />
+        <React.Fragment key={spot.id}>
+          <Marker
+            position={{ lat: spot.lat, lng: spot.lng }}
+            onClick={() => handleMarkerClick(spot.id)}
+            // @ts-ignore - icon typing issue with the Google Maps API
+            icon={getParkingMarkerIcon(spot)}
+            animation={spot.id === selectedSpotId ? google.maps.Animation.BOUNCE : undefined}
+            zIndex={100}
+          />
+
+          {/* Valet badge overlay for spots with valet service */}
+          {spot.hasValetService && (
+            <OverlayView
+              position={{ lat: spot.lat, lng: spot.lng }}
+              mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+              getPixelPositionOffset={(width, height) => ({
+                x: 16, // Offset to position the badge to the right of the marker
+                y: -8  // Offset to position the badge slightly above the marker
+              })}
+            >
+              <div 
+                onClick={(e) => handleValetClick(spot.id, e)} 
+                className="cursor-pointer rounded-full bg-white p-0.5 shadow-md"
+                title={`Valet Service: From RM${spot.valetBaseRate}/hr (members only)`}
+              >
+                <ValetBadgeIcon className="h-6 w-6" />
+              </div>
+            </OverlayView>
+          )}
+        </React.Fragment>
       ))}
 
       {activeMarker !== null && (
@@ -175,6 +212,14 @@ const GoogleMapComponent: React.FC<MapProps> = ({
             <p className="text-xs mt-1">
               RM{parkingSpots.find(spot => spot.id === activeMarker)?.pricePerHour}/hr
             </p>
+            {parkingSpots.find(spot => spot.id === activeMarker)?.hasValetService && (
+              <div className="flex items-center mt-1 text-xs text-purple-600">
+                <span className="flex items-center gap-1">
+                  <ValetBadgeIcon className="h-3 w-3" />
+                  <span>Valet Service Available</span>
+                </span>
+              </div>
+            )}
           </div>
         </InfoWindow>
       )}

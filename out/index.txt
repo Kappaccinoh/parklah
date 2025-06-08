@@ -1,18 +1,21 @@
 1:"$Sreact.fragment"
-2:I[7555,[],""]
-3:I[1295,[],""]
-4:I[894,[],"ClientPageRoot"]
-5:I[1873,["84","static/chunks/4e6af11a-a37eff00bc9c793c.js","316","static/chunks/316-2d402978c0e424b6.js","974","static/chunks/app/page-d096fc3578b5d8f0.js"],"default"]
-8:I[9665,[],"OutletBoundary"]
-b:I[9665,[],"ViewportBoundary"]
-d:I[9665,[],"MetadataBoundary"]
-f:I[6614,[],""]
-:HL["/parklah/_next/static/media/a34f9d1faa5f3315-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-:HL["/parklah/_next/static/css/6d0b3ee717f0882e.css","style"]
-0:{"P":null,"b":"nWDhyKRdMU4VkulBEIU1v","p":"/parklah","c":["",""],"i":false,"f":[[["",{"children":["__PAGE__",{}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/parklah/_next/static/css/6d0b3ee717f0882e.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__className_1adc74","children":["$","div",null,{"className":"min-h-screen bg-gray-50","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]}]]}],{"children":["__PAGE__",["$","$1","c",{"children":[["$","$L4",null,{"Component":"$5","searchParams":{},"params":{},"promises":["$@6","$@7"]}],"$undefined",null,["$","$L8",null,{"children":["$L9","$La",null]}]]}],{},null,false]},[null,[],[]],false],["$","$1","h",{"children":[null,["$","$1","4ozus4JGXibPOTZ3Mo54l",{"children":[["$","$Lb",null,{"children":"$Lc"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Ld",null,{"children":"$Le"}]]}],false]],"m":"$undefined","G":["$f","$undefined"],"s":false,"S":true}
-6:{}
-7:{}
-c:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]
-9:null
-a:null
-e:[["$","title","0",{"children":"ParkEasy Malaysia - Find Parking in KL"}],["$","meta","1",{"name":"description","content":"Find available parking spaces in Kuala Lumpur and Malaysia"}],["$","meta","2",{"name":"generator","content":"v0.dev"}]]
+2:I[3018,["177","static/chunks/app/layout-64595141a0d60090.js"],"default"]
+3:I[8076,["177","static/chunks/app/layout-64595141a0d60090.js"],"SubscriptionProvider"]
+4:I[2854,["177","static/chunks/app/layout-64595141a0d60090.js"],"default"]
+5:I[7555,[],""]
+6:I[1295,[],""]
+7:I[894,[],"ClientPageRoot"]
+8:I[6564,["84","static/chunks/4e6af11a-b710875211168b75.js","863","static/chunks/863-d1f1e9c7acf5b754.js","974","static/chunks/app/page-af29940904563ffd.js"],"default"]
+b:I[9665,[],"OutletBoundary"]
+e:I[9665,[],"ViewportBoundary"]
+10:I[9665,[],"MetadataBoundary"]
+12:I[6614,[],""]
+:HL["/_next/static/media/e4af272ccee01ff0-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/_next/static/css/a7b18935e4b4c882.css","style"]
+0:{"P":null,"b":"RTgmIfSqhii66GWohWAFV","p":"","c":["",""],"i":false,"f":[[["",{"children":["__PAGE__",{}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/css/a7b18935e4b4c882.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":[["$","head",null,{"children":[["$","meta",null,{"name":"base-path","content":"/parklah"}],["$","link",null,{"rel":"icon","href":"/favicon.ico","sizes":"any"}],["$","link",null,{"rel":"icon","href":"/favicon.svg","type":"image/svg+xml"}],["$","link",null,{"rel":"apple-touch-icon","href":"/apple-touch-icon.png"}],["$","link",null,{"rel":"manifest","href":"/manifest.json"}]]}],["$","body",null,{"className":"__className_e8ce0c","children":[["$","$L2",null,{}],["$","$L3",null,{"children":["$","$L4",null,{"children":["$","div",null,{"className":"min-h-screen bg-gray-50","children":["$","$L5",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]}]]}]]}]]}],{"children":["__PAGE__",["$","$1","c",{"children":[["$","$L7",null,{"Component":"$8","searchParams":{},"params":{},"promises":["$@9","$@a"]}],"$undefined",null,["$","$Lb",null,{"children":["$Lc","$Ld",null]}]]}],{},null,false]},[null,[],[]],false],["$","$1","h",{"children":[null,["$","$1","uOl_nM2bOBo3seDwLEI1l",{"children":[["$","$Le",null,{"children":"$Lf"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$L10",null,{"children":"$L11"}]]}],false]],"m":"$undefined","G":["$12","$undefined"],"s":false,"S":true}
+9:{}
+a:{}
+f:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]
+c:null
+d:null
+11:[["$","title","0",{"children":"ParkEasy Malaysia - Find Parking in KL"}],["$","meta","1",{"name":"description","content":"Find available parking spaces in Kuala Lumpur and Malaysia"}],["$","meta","2",{"name":"generator","content":"v0.dev"}]]

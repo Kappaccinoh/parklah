@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useMemo } from "react"
-import { Search, Navigation, AlertTriangle, CheckCircle, Filter, Route, Clock, TrendingUp } from "lucide-react"
+import { Search, Navigation, AlertTriangle, CheckCircle, Filter, Route, Clock, TrendingUp, Car } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
@@ -12,9 +12,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import GoogleMapComponent from "@/components/GoogleMap"
 import { NavigationSheet } from "@/components/NavigationSheet"
 import AnonymousMessaging from "@/components/AnonymousMessaging"
+import ValetBookingModal from "@/components/ValetBookingModal"
 import { parkingSpots, type ParkingSpot } from "@/lib/parkingData"
 import useGeolocation from "@/hooks/useGeolocation"
 import { calculateDistance, estimateTravelTime, formatDistance } from "@/lib/distanceUtils"
+import { useSubscription } from "@/lib/subscriptionContext"
 
 // The parking spots data is now imported from lib/parkingData.ts
 
@@ -27,12 +29,21 @@ interface ParkingSpotWithDistance extends ParkingSpot {
 export default function ParkingFinderApp() {
   const [selectedSpot, setSelectedSpot] = useState<ParkingSpotWithDistance | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
-  const [filterType, setFilterType] = useState("all")
+  
+  // Enhanced filtering options
+  const [legalFilter, setLegalFilter] = useState<"all" | "legal" | "illegal">("all")
+  const [valetFilter, setValetFilter] = useState<"all" | "valet" | "no-valet">("all")
+  
   const [showAnalytics, setShowAnalytics] = useState(false)
   const [mapLoaded, setMapLoaded] = useState(false)
   const [currentTime, setCurrentTime] = useState(new Date())
   const [navigationOpen, setNavigationOpen] = useState(false)
   const [expandedView, setExpandedView] = useState<'map' | 'list'>('map')
+  const [valetModalOpen, setValetModalOpen] = useState(false)
+  const [selectedValetSpot, setSelectedValetSpot] = useState<ParkingSpotWithDistance | null>(null)
+  
+  // Get subscription status
+  const { isSubscribed } = useSubscription()
   
   // Get user's current location
   const userLocation = useGeolocation()
@@ -77,16 +88,29 @@ export default function ParkingFinderApp() {
   }, [userLocation.latitude, userLocation.longitude]);
 
   // Filter spots based on search query and filter type
-  const filteredSpots = spotsWithDistance.filter((spot) => {
-    const matchesSearch = spot.name.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesFilter =
-      filterType === "all" ||
-      (filterType === "legal" && spot.isLegal) ||
-      (filterType === "street" && spot.type === "street") ||
-      (filterType === "mall" && spot.type === "mall")
-
-    return matchesSearch && matchesFilter
-  })
+  const filteredSpots = useMemo(() => {
+    return spotsWithDistance.filter((spot) => {
+      // Apply search filter
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase();
+        const matchesSearch = (
+          spot.name.toLowerCase().includes(query) ||
+          spot.address.toLowerCase().includes(query)
+        );
+        if (!matchesSearch) return false;
+      }
+      
+      // Apply legal status filter
+      if (legalFilter === "legal" && !spot.isLegal) return false;
+      if (legalFilter === "illegal" && spot.isLegal) return false;
+      
+      // Apply valet service filter
+      if (valetFilter === "valet" && !spot.hasValetService) return false;
+      if (valetFilter === "no-valet" && spot.hasValetService) return false;
+      
+      return true;
+    });
+  }, [spotsWithDistance, searchQuery, legalFilter, valetFilter]);
 
   const getProbabilityColor = (probability: number) => {
     if (probability >= 70) return "bg-green-500"
@@ -157,26 +181,102 @@ export default function ParkingFinderApp() {
         </div>
         <Sheet>
           <SheetTrigger asChild>
-            <Button variant="outline" size="icon" className="h-9 w-9">
+            <Button 
+              size="icon" 
+              variant="outline"
+              className="h-10 w-12 px-2"
+            >
               <Filter className="h-4 w-4" />
+              <span className="sr-only">Filter</span>
             </Button>
           </SheetTrigger>
-          <SheetContent side="right" className="w-72">
+          <SheetContent side="bottom" className="h-[380px] sm:h-[480px] sm:max-w-lg sm:rounded-lg sm:border">
             <SheetHeader>
-              <SheetTitle>Filter Options</SheetTitle>
+              <SheetTitle>Filter Parking Spots</SheetTitle>
             </SheetHeader>
-            <div className={`p-3 overflow-y-auto transition-all duration-300 ${expandedView === 'list' ? 'h-[70vh]' : 'h-[40vh]'} md:h-auto`}>
-              <div>
-                <label className="text-sm font-medium mb-2 block">Filter by Type</label>
-                <Select value={filterType} onValueChange={setFilterType}>
-                  <SelectTrigger>
-                    <SelectValue />
+            <div className="py-4">
+              <div className="mb-4">
+                <h3 className="mb-2 text-sm font-medium">Legal Status</h3>
+                <div className="flex gap-2">
+                  <Button
+                    variant={legalFilter === "all" ? "default" : "outline"}
+                    className="flex-1 h-9"
+                    onClick={() => setLegalFilter("all")}
+                  >
+                    All
+                  </Button>
+                  <Button
+                    variant={legalFilter === "legal" ? "default" : "outline"}
+                    className="flex-1 h-9"
+                    onClick={() => setLegalFilter("legal")}
+                  >
+                    <CheckCircle className="w-4 h-4 mr-2" />
+                    Legal
+                  </Button>
+                  <Button
+                    variant={legalFilter === "illegal" ? "default" : "outline"}
+                    className="flex-1 h-9"
+                    onClick={() => setLegalFilter("illegal")}
+                  >
+                    <AlertTriangle className="w-4 h-4 mr-2" />
+                    Illegal
+                  </Button>
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <h3 className="mb-2 text-sm font-medium">Valet Service</h3>
+                <div className="flex gap-2">
+                  <Button
+                    variant={valetFilter === "all" ? "default" : "outline"}
+                    className="flex-1 h-9"
+                    onClick={() => setValetFilter("all")}
+                  >
+                    All
+                  </Button>
+                  <Button
+                    variant={valetFilter === "valet" ? "default" : "outline"}
+                    className="flex-1 h-9"
+                    onClick={() => setValetFilter("valet")}
+                  >
+                    <Car className="w-4 h-4 mr-2" />
+                    With Valet
+                  </Button>
+                  <Button
+                    variant={valetFilter === "no-valet" ? "default" : "outline"}
+                    className="flex-1 h-9"
+                    onClick={() => setValetFilter("no-valet")}
+                  >
+                    No Valet
+                  </Button>
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <h3 className="mb-2 text-sm font-medium">Sort By</h3>
+                <Select defaultValue="distance">
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Sort By" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Parking</SelectItem>
-                    <SelectItem value="legal">Legal Only</SelectItem>
+                    <SelectItem value="distance">Distance</SelectItem>
+                    <SelectItem value="price">Price (Low to High)</SelectItem>
+                    <SelectItem value="success">Success Rate</SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
+              
+              <div className="pt-4">
+                <Button 
+                  className="w-full" 
+                  variant="outline"
+                  onClick={() => {
+                    setLegalFilter("all");
+                    setValetFilter("all");
+                  }}
+                >
+                  Reset All Filters
+                </Button>
               </div>
             </div>
           </SheetContent>
@@ -192,6 +292,10 @@ export default function ParkingFinderApp() {
           parkingSpots={filteredSpots} 
           selectedSpotId={selectedSpot?.id} 
           onSpotSelect={(spot) => setSelectedSpot(spot as ParkingSpotWithDistance)}
+          onValetSelect={(spot) => {
+            setSelectedValetSpot(spot as ParkingSpotWithDistance);
+            setValetModalOpen(true);
+          }}
           userLocation={userLocation} 
         />
 
@@ -245,7 +349,9 @@ export default function ParkingFinderApp() {
 
             <div className="grid grid-cols-3 gap-3 mb-4">
               <div className="text-center">
-                <div className={`text-lg font-bold ${getProbabilityTextColor(getCurrentSuccessRate(selectedSpot))}`}>
+                <div
+                  className={`text-lg font-bold ${getProbabilityTextColor(getCurrentSuccessRate(selectedSpot))}`}
+                >
                   {getCurrentSuccessRate(selectedSpot)}%
                 </div>
                 <div className="text-xs text-muted-foreground">Success Rate</div>
@@ -388,6 +494,21 @@ export default function ParkingFinderApp() {
                 <Navigation className="w-4 h-4 mr-2" />
                 Navigate
               </Button>
+              
+              {/* Valet booking button - only shown for spots with valet service */}
+              {selectedSpot.hasValetService && (
+                <Button 
+                  variant="outline" 
+                  className="flex-1 h-9 text-sm"
+                  onClick={() => {
+                    setSelectedValetSpot(selectedSpot);
+                    setValetModalOpen(true);
+                  }}
+                >
+                  <Car className="w-4 h-4 mr-2" />
+                  Book Valet
+                </Button>
+              )}
             </div>
             
             {/* Navigation Sheet with directions and local images */}
@@ -396,6 +517,13 @@ export default function ParkingFinderApp() {
               onOpenChange={setNavigationOpen} 
               spot={selectedSpot} 
               userLocation={userLocation}
+            />
+            
+            {/* Valet Booking Modal */}
+            <ValetBookingModal
+              open={valetModalOpen}
+              onOpenChange={setValetModalOpen}
+              spot={selectedValetSpot}
             />
           </div>
         ) : (
@@ -412,7 +540,7 @@ export default function ParkingFinderApp() {
                       <div className="flex-1 min-w-0">
                         <div className="font-medium text-sm truncate">{spot.name}</div>
                         <div className="text-xs text-gray-600 truncate mb-1">{spot.address}</div>
-                        <div className="flex items-center gap-2 mb-1">
+                        <div className="flex flex-1 justify-between items-center mb-1">
                           {spot.isLegal ? (
                             <Badge variant="secondary" className="bg-green-100 text-green-800 text-xs">
                               Legal
@@ -422,16 +550,27 @@ export default function ParkingFinderApp() {
                               Risk
                             </Badge>
                           )}
-                          {userLocation.latitude ? (
-                            <span className="text-xs text-muted-foreground">
-                              <Route className="h-3 w-3 inline mr-1" />
-                              {formatDistance(spot.distanceKm || 0)} • {spot.estimatedDriveTimeMin}min
-                            </span>
-                          ) : (
-                            <span className="text-xs text-muted-foreground">{spot.walkTime}min walk</span>
+                          
+                          {/* Valet service badge */}
+                          {spot.hasValetService && (
+                            <Badge variant="outline" className="ml-1 text-xs bg-purple-50 text-purple-600 border-purple-200">
+                              <Car className="h-3 w-3 mr-1" />
+                              Valet
+                            </Badge>
                           )}
+                          <span className="text-xs text-muted-foreground">{spot.walkTime}min walk</span>
                         </div>
                         <div className="text-xs text-gray-600">{spot.availabilityDescription}</div>
+                        
+                        {/* Valet badge for list view */}
+                        {spot.hasValetService && (
+                          <div className="flex items-center mt-0.5">
+                            <Badge variant="outline" className="text-[10px] py-0 px-1 h-4 bg-purple-50 text-purple-600 border-purple-200">
+                              <Car className="h-2 w-2 mr-0.5" />
+                              Valet Available
+                            </Badge>
+                          </div>
+                        )}
                       </div>
                       <div className="text-right ml-2">
                         <div

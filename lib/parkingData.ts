@@ -17,6 +17,9 @@ export interface ParkingSpot {
   entrances: { name: string; description: string }[];
   busyTimes: { time: string; status: string }[];
   tips: string;
+  hasValetService?: boolean;
+  valetPartner?: string;
+  valetBaseRate?: number;
 }
 
 // Parking spots in Malaysia (KL area) with accurate coordinates and walking times
@@ -47,6 +50,9 @@ export const parkingSpots: ParkingSpot[] = [
       { time: "Night (10PM-12AM)", status: "Moderate" },
     ],
     tips: "Best to arrive before 11AM on weekends. Valet service available.",
+    hasValetService: true,
+    valetPartner: "Pavilion Valet Luxe",
+    valetBaseRate: 30,
   },
   {
     id: 2,
@@ -75,6 +81,9 @@ export const parkingSpots: ParkingSpot[] = [
       { time: "Night (10PM-12AM)", status: "Low" },
     ],
     tips: "Very crowded on weekends. Use P2 entrance for less congestion.",
+    hasValetService: true,
+    valetPartner: "KLCC Valet Premium",
+    valetBaseRate: 25,
   },
   {
     id: 3,
@@ -235,6 +244,9 @@ export const parkingSpots: ParkingSpot[] = [
       { time: "Night (10PM-12AM)", status: "Moderate" },
     ],
     tips: "Use the LG parking floors for better availability. E-payment options available.",
+    hasValetService: true,
+    valetPartner: "1U Valet Services",
+    valetBaseRate: 20,
   },
   {
     id: 9,
