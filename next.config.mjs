@@ -1,6 +1,6 @@
 const repo = 'parklah';
 // Always use the repo path for static assets since we're deploying to GitHub Pages
-const isProd = false; // Force production mode for GitHub Pages
+const isProd = true; // Force production mode for GitHub Pages
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
