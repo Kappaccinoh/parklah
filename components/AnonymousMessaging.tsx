@@ -17,6 +17,12 @@ import { QrCode, Send, MessageSquare, Bell, Car, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
+interface AnonymousMessagingProps {
+  onOpenMessages?: (openFn: () => void) => void;
+  onOpenScanner?: (openFn: () => void) => void;
+  onUnreadCountChange?: (count: number) => void;
+}
+
 interface Message {
   id: string;
   senderId: string;
@@ -46,7 +52,7 @@ const mockMessages: Message[] = [
   }
 ];
 
-export function AnonymousMessaging() {
+export function AnonymousMessaging({ onOpenMessages, onOpenScanner, onUnreadCountChange }: AnonymousMessagingProps = {}) {
   const [isQRScannerOpen, setIsQRScannerOpen] = useState(false);
   const [isMessageDialogOpen, setIsMessageDialogOpen] = useState(false);
   const [scannedParkId, setScannedParkId] = useState<string | null>(null);
@@ -55,10 +61,33 @@ export function AnonymousMessaging() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [currentView, setCurrentView] = useState<'inbox' | 'compose'>('inbox');
   
-  // Count unread messages
+  // Set up callbacks just once after initial render
   useEffect(() => {
-    setUnreadCount(messages.filter(msg => !msg.isRead).length);
-  }, [messages]);
+    // Set up dialog openers once
+    if (onOpenMessages) {
+      onOpenMessages(() => setIsMessageDialogOpen(true));
+    }
+    if (onOpenScanner) {
+      onOpenScanner(() => setIsQRScannerOpen(true));
+    }
+    
+    // Calculate initial unread count
+    const count = messages.filter(msg => !msg.isRead).length;
+    setUnreadCount(count);
+    
+    // Inform parent once
+    if (onUnreadCountChange) {
+      onUnreadCountChange(count);
+    }
+    
+    // No dependencies - run only on mount
+  }, []);
+  
+  // Only track message state changes internally, don't try to notify parent
+  useEffect(() => {
+    const newCount = messages.filter(msg => !msg.isRead).length;
+    setUnreadCount(newCount);
+  }, [messages]); // Only depend on messages array
   
   const handleScan = (data: string) => {
     if (data && data.startsWith('PARKLAH-')) {
@@ -102,35 +131,10 @@ export function AnonymousMessaging() {
     ));
   };
   
+  // Button handlers moved to the main useEffect above
+
   return (
     <>
-      {/* Menu Buttons - using fixed positioning container for visibility on all screens */}
-      <div className={`app-button-container`}>
-        <div className="flex justify-between">
-          <Button 
-            className="app-button app-button-left" 
-            variant="default"
-            onClick={() => setIsMessageDialogOpen(true)}
-          >
-            <MessageSquare size={16} className="mr-2" />
-            <span className="text-xs">Messages</span>
-            {unreadCount > 0 && (
-              <Badge className="absolute -top-2 -right-2 bg-red-500 h-5 w-5 flex items-center justify-center p-0">
-                {unreadCount}
-              </Badge>
-            )}
-          </Button>
-          
-          <Button 
-            className="app-button app-button-right" 
-            variant="secondary"
-            onClick={() => setIsQRScannerOpen(true)}
-          >
-            <QrCode size={16} className="mr-2" />
-            <span className="text-xs">Scan QR</span>
-          </Button>
-        </div>
-      </div>
       
       {/* QR Scanner Dialog - Fullscreen on Mobile */}
       <Dialog open={isQRScannerOpen} onOpenChange={setIsQRScannerOpen}>

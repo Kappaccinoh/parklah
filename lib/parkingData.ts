@@ -1,25 +1,33 @@
 // Parking spot data type definition
+// Define availability data type
+export interface AvailabilityData {
+  day: string;
+  times: string[];
+}
+
 export interface ParkingSpot {
   id: number;
   name: string;
   address: string;
   lat: number;
   lng: number;
-  capacity: number;
   pricePerHour: number;
-  isLegal: boolean;
-  type: string;
-  walkTime: number;
-  peakHours: string;
-  availabilityDescription: string;
-  findingProbability: number;
-  trafficFrequency: number[];
+  walkTime: number; // in minutes
+  distanceKm?: number; // distance from user in kilometers
+  isLegal: boolean; // whether the spot is a legal parking spot
+  type: string; // type of parking spot (street, garage, etc.)
+  images: string[];
+  availability: AvailabilityData[];
+  restrictions: string[];
+  description: string;
+  capacity: number; // total parking capacity
+  trafficFrequency: number[]; // hourly traffic frequency data (0-100 scale for each hour 0-23)
   entrances: { name: string; description: string }[];
   busyTimes: { time: string; status: string }[];
   tips: string;
-  hasValetService?: boolean;
-  valetPartner?: string;
-  valetBaseRate?: number;
+  findingProbability: number;
+  peakHours: string;
+  availabilityDescription: string;
 }
 
 // Parking spots in Malaysia (KL area) with accurate coordinates and walking times
@@ -39,7 +47,20 @@ export const parkingSpots: ParkingSpot[] = [
     availabilityDescription: "Good chance of finding parking",
     findingProbability: 75,
     trafficFrequency: [20, 15, 10, 8, 12, 25, 45, 65, 80, 85, 90, 95, 85, 75, 70, 80, 85, 90, 85, 70, 55, 40, 30, 25],
-    entrances: [
+    images: [
+    `/images/spots/spot_1.jpg`,
+    `/images/spots/spot_2.jpg`,
+  ],
+  availability: [
+    { day: "Monday-Friday", times: ["8:00 AM - 10:00 PM"] },
+    { day: "Saturday-Sunday", times: ["10:00 AM - 8:00 PM"] },
+  ],
+  restrictions: [
+    "No overnight parking",
+    "No parking during events"
+  ],
+  description: "Convenient parking spot located in the heart of the area. Easy access to nearby amenities.",
+  entrances: [
       { name: "Main Entrance", description: "Via Jalan Bukit Bintang" },
       { name: "Side Entrance", description: "Via Jalan Raja Chulan" },
     ],
@@ -49,10 +70,7 @@ export const parkingSpots: ParkingSpot[] = [
       { time: "Evening (6PM-10PM)", status: "Very High" },
       { time: "Night (10PM-12AM)", status: "Moderate" },
     ],
-    tips: "Best to arrive before 11AM on weekends. Valet service available.",
-    hasValetService: true,
-    valetPartner: "Pavilion Valet Luxe",
-    valetBaseRate: 30,
+    tips: "Best to arrive before 11AM on weekends.",
   },
   {
     id: 2,
@@ -69,7 +87,20 @@ export const parkingSpots: ParkingSpot[] = [
     availabilityDescription: "Large parking complex with many spots",
     findingProbability: 85,
     trafficFrequency: [15, 10, 8, 5, 10, 20, 40, 70, 85, 95, 98, 95, 90, 85, 80, 85, 90, 95, 90, 75, 60, 45, 30, 20],
-    entrances: [
+    images: [
+    `/images/spots/spot_1.jpg`,
+    `/images/spots/spot_2.jpg`,
+  ],
+  availability: [
+    { day: "Monday-Friday", times: ["8:00 AM - 10:00 PM"] },
+    { day: "Saturday-Sunday", times: ["10:00 AM - 8:00 PM"] },
+  ],
+  restrictions: [
+    "No overnight parking",
+    "No parking during events"
+  ],
+  description: "Convenient parking spot located in the heart of the area. Easy access to nearby amenities.",
+  entrances: [
       { name: "P1 Entrance", description: "Via Jalan Ampang" },
       { name: "P2 Entrance", description: "Via Persiaran KLCC" },
       { name: "Mall Entrance", description: "Direct mall access" },
@@ -81,9 +112,6 @@ export const parkingSpots: ParkingSpot[] = [
       { time: "Night (10PM-12AM)", status: "Low" },
     ],
     tips: "Very crowded on weekends. Use P2 entrance for less congestion.",
-    hasValetService: true,
-    valetPartner: "KLCC Valet Premium",
-    valetBaseRate: 25,
   },
   {
     id: 3,
@@ -100,7 +128,20 @@ export const parkingSpots: ParkingSpot[] = [
     availabilityDescription: "Few spots, arrive early",
     findingProbability: 35,
     trafficFrequency: [10, 8, 5, 5, 8, 15, 25, 35, 40, 45, 50, 55, 60, 65, 70, 75, 85, 95, 90, 80, 70, 50, 30, 15],
-    entrances: [
+    images: [
+    `/images/spots/spot_1.jpg`,
+    `/images/spots/spot_2.jpg`,
+  ],
+  availability: [
+    { day: "Monday-Friday", times: ["8:00 AM - 10:00 PM"] },
+    { day: "Saturday-Sunday", times: ["10:00 AM - 8:00 PM"] },
+  ],
+  restrictions: [
+    "No overnight parking",
+    "No parking during events"
+  ],
+  description: "Convenient parking spot located in the heart of the area. Easy access to nearby amenities.",
+  entrances: [
       { name: "From Jalan Bukit Bintang", description: "Turn right into Jalan Alor" },
       { name: "From Jalan Changkat", description: "Direct access" },
     ],
@@ -127,7 +168,20 @@ export const parkingSpots: ParkingSpot[] = [
     availabilityDescription: "Risky but often available",
     findingProbability: 80,
     trafficFrequency: [5, 5, 5, 5, 10, 20, 40, 80, 90, 85, 80, 75, 70, 75, 80, 85, 90, 85, 70, 50, 30, 20, 10, 8],
-    entrances: [{ name: "Roadside", description: "⚠️ Risk of summons RM50-150" }],
+    images: [
+    `/images/spots/spot_1.jpg`,
+    `/images/spots/spot_2.jpg`,
+  ],
+  availability: [
+    { day: "Monday-Friday", times: ["8:00 AM - 10:00 PM"] },
+    { day: "Saturday-Sunday", times: ["10:00 AM - 8:00 PM"] },
+  ],
+  restrictions: [
+    "No overnight parking",
+    "No parking during events"
+  ],
+  description: "Convenient parking spot located in the heart of the area. Easy access to nearby amenities.",
+  entrances: [{ name: "Roadside", description: "⚠️ Risk of summons RM50-150" }],
     busyTimes: [
       { time: "Morning (8AM-12PM)", status: "High Risk" },
       { time: "Afternoon (12PM-6PM)", status: "High Risk" },
@@ -151,7 +205,20 @@ export const parkingSpots: ParkingSpot[] = [
     availabilityDescription: "Plenty of spaces",
     findingProbability: 90,
     trafficFrequency: [15, 12, 10, 8, 12, 20, 35, 50, 60, 65, 70, 75, 70, 65, 60, 65, 70, 75, 70, 60, 45, 35, 25, 20],
-    entrances: [
+    images: [
+    `/images/spots/spot_1.jpg`,
+    `/images/spots/spot_2.jpg`,
+  ],
+  availability: [
+    { day: "Monday-Friday", times: ["8:00 AM - 10:00 PM"] },
+    { day: "Saturday-Sunday", times: ["10:00 AM - 8:00 PM"] },
+  ],
+  restrictions: [
+    "No overnight parking",
+    "No parking during events"
+  ],
+  description: "Convenient parking spot located in the heart of the area. Easy access to nearby amenities.",
+  entrances: [
       { name: "Main Entrance", description: "Via Jalan Imbi" },
       { name: "West Entrance", description: "Via Jalan Pudu" },
     ],
@@ -178,7 +245,20 @@ export const parkingSpots: ParkingSpot[] = [
     availabilityDescription: "Good availability on weekdays",
     findingProbability: 80,
     trafficFrequency: [10, 8, 5, 5, 10, 20, 40, 60, 70, 75, 80, 85, 80, 75, 70, 75, 85, 90, 85, 70, 50, 35, 20, 10],
-    entrances: [
+    images: [
+    `/images/spots/spot_1.jpg`,
+    `/images/spots/spot_2.jpg`,
+  ],
+  availability: [
+    { day: "Monday-Friday", times: ["8:00 AM - 10:00 PM"] },
+    { day: "Saturday-Sunday", times: ["10:00 AM - 8:00 PM"] },
+  ],
+  restrictions: [
+    "No overnight parking",
+    "No parking during events"
+  ],
+  description: "Convenient parking spot located in the heart of the area. Easy access to nearby amenities.",
+  entrances: [
       { name: "Main Entrance", description: "Via SS21/37" },
       { name: "LG Entrance", description: "Via SS21/1A" },
     ],
@@ -205,7 +285,20 @@ export const parkingSpots: ParkingSpot[] = [
     availabilityDescription: "Limited street parking",
     findingProbability: 45,
     trafficFrequency: [15, 10, 8, 5, 10, 30, 50, 70, 80, 70, 65, 75, 80, 65, 60, 70, 85, 95, 90, 80, 60, 40, 25, 15],
-    entrances: [
+    images: [
+    `/images/spots/spot_1.jpg`,
+    `/images/spots/spot_2.jpg`,
+  ],
+  availability: [
+    { day: "Monday-Friday", times: ["8:00 AM - 10:00 PM"] },
+    { day: "Saturday-Sunday", times: ["10:00 AM - 8:00 PM"] },
+  ],
+  restrictions: [
+    "No overnight parking",
+    "No parking during events"
+  ],
+  description: "Convenient parking spot located in the heart of the area. Easy access to nearby amenities.",
+  entrances: [
       { name: "Roadside", description: "Along Jalan SS21/39" },
       { name: "Side Streets", description: "Around Uptown area" },
     ],
@@ -232,7 +325,20 @@ export const parkingSpots: ParkingSpot[] = [
     availabilityDescription: "Massive parking complex",
     findingProbability: 95,
     trafficFrequency: [10, 5, 5, 5, 8, 15, 35, 55, 70, 80, 85, 90, 95, 90, 85, 80, 85, 90, 80, 65, 50, 35, 25, 15],
-    entrances: [
+    images: [
+    `/images/spots/spot_1.jpg`,
+    `/images/spots/spot_2.jpg`,
+  ],
+  availability: [
+    { day: "Monday-Friday", times: ["8:00 AM - 10:00 PM"] },
+    { day: "Saturday-Sunday", times: ["10:00 AM - 8:00 PM"] },
+  ],
+  restrictions: [
+    "No overnight parking",
+    "No parking during events"
+  ],
+  description: "Convenient parking spot located in the heart of the area. Easy access to nearby amenities.",
+  entrances: [
       { name: "New Wing", description: "Via Lebuh Bandar Utama" },
       { name: "Old Wing", description: "Via Dataran Bandar Utama" },
       { name: "Centre Court", description: "Via Lebuh Bandar Utama" },
@@ -244,9 +350,6 @@ export const parkingSpots: ParkingSpot[] = [
       { time: "Night (10PM-12AM)", status: "Moderate" },
     ],
     tips: "Use the LG parking floors for better availability. E-payment options available.",
-    hasValetService: true,
-    valetPartner: "1U Valet Services",
-    valetBaseRate: 20,
   },
   {
     id: 9,
@@ -263,7 +366,20 @@ export const parkingSpots: ParkingSpot[] = [
     availabilityDescription: "Good availability most times",
     findingProbability: 85,
     trafficFrequency: [10, 8, 5, 5, 8, 20, 35, 45, 60, 70, 80, 85, 80, 75, 70, 75, 85, 90, 80, 65, 50, 30, 20, 10],
-    entrances: [
+    images: [
+    `/images/spots/spot_1.jpg`,
+    `/images/spots/spot_2.jpg`,
+  ],
+  availability: [
+    { day: "Monday-Friday", times: ["8:00 AM - 10:00 PM"] },
+    { day: "Saturday-Sunday", times: ["10:00 AM - 8:00 PM"] },
+  ],
+  restrictions: [
+    "No overnight parking",
+    "No parking during events"
+  ],
+  description: "Convenient parking spot located in the heart of the area. Easy access to nearby amenities.",
+  entrances: [
       { name: "Main Entrance", description: "Via Jalan SS7/26A" },
       { name: "East Entrance", description: "Via Lebuhraya Damansara-Puchong" },
     ],
@@ -290,7 +406,20 @@ export const parkingSpots: ParkingSpot[] = [
     availabilityDescription: "Usually has available spaces",
     findingProbability: 80,
     trafficFrequency: [8, 5, 5, 5, 10, 20, 30, 45, 55, 65, 70, 75, 70, 65, 60, 65, 75, 80, 70, 55, 40, 25, 15, 10],
-    entrances: [
+    images: [
+    `/images/spots/spot_1.jpg`,
+    `/images/spots/spot_2.jpg`,
+  ],
+  availability: [
+    { day: "Monday-Friday", times: ["8:00 AM - 10:00 PM"] },
+    { day: "Saturday-Sunday", times: ["10:00 AM - 8:00 PM"] },
+  ],
+  restrictions: [
+    "No overnight parking",
+    "No parking during events"
+  ],
+  description: "Convenient parking spot located in the heart of the area. Easy access to nearby amenities.",
+  entrances: [
       { name: "Main Entrance", description: "Via Jalan SS22/23" },
       { name: "Side Entrance", description: "Via Jalan SS22/19" },
     ],
@@ -317,7 +446,20 @@ export const parkingSpots: ParkingSpot[] = [
     availabilityDescription: "Often available but high risk of summons",
     findingProbability: 80,
     trafficFrequency: [5,5,5,5,10,30,50,80,90,85,80,75,70,75,80,85,90,85,70,50,30,20,10,5],
-    entrances: [
+    images: [
+    `/images/spots/spot_1.jpg`,
+    `/images/spots/spot_2.jpg`,
+  ],
+  availability: [
+    { day: "Monday-Friday", times: ["8:00 AM - 10:00 PM"] },
+    { day: "Saturday-Sunday", times: ["10:00 AM - 8:00 PM"] },
+  ],
+  restrictions: [
+    "No overnight parking",
+    "No parking during events"
+  ],
+  description: "Convenient parking spot located in the heart of the area. Easy access to nearby amenities.",
+  entrances: [
       { name: "Roadside", description: "Along Jalan Raja Laut – frequent patrols" }
     ],
     busyTimes: [
@@ -343,7 +485,20 @@ export const parkingSpots: ParkingSpot[] = [
     availabilityDescription: "Spots usually free but heavily monitored",
     findingProbability: 60,
     trafficFrequency: [10,10,10,10,15,25,40,60,75,80,85,80,75,70,65,70,75,80,70,50,30,20,15,10],
-    entrances: [
+    images: [
+    `/images/spots/spot_1.jpg`,
+    `/images/spots/spot_2.jpg`,
+  ],
+  availability: [
+    { day: "Monday-Friday", times: ["8:00 AM - 10:00 PM"] },
+    { day: "Saturday-Sunday", times: ["10:00 AM - 8:00 PM"] },
+  ],
+  restrictions: [
+    "No overnight parking",
+    "No parking during events"
+  ],
+  description: "Convenient parking spot located in the heart of the area. Easy access to nearby amenities.",
+  entrances: [
       { name: "Side Alley", description: "Between Jalan Ipoh and Jalan Sultan Azlan Shah" }
     ],
     busyTimes: [
@@ -369,7 +524,20 @@ export const parkingSpots: ParkingSpot[] = [
     availabilityDescription: "Rarely full but constant risk of summons",
     findingProbability: 70,
     trafficFrequency: [15,15,15,15,20,35,55,75,85,80,75,70,65,60,55,60,65,70,60,45,30,20,15,10],
-    entrances: [
+    images: [
+    `/images/spots/spot_1.jpg`,
+    `/images/spots/spot_2.jpg`,
+  ],
+  availability: [
+    { day: "Monday-Friday", times: ["8:00 AM - 10:00 PM"] },
+    { day: "Saturday-Sunday", times: ["10:00 AM - 8:00 PM"] },
+  ],
+  restrictions: [
+    "No overnight parking",
+    "No parking during events"
+  ],
+  description: "Convenient parking spot located in the heart of the area. Easy access to nearby amenities.",
+  entrances: [
       { name: "Bus Terminal Side", description: "Between Pudu Sentral entrance and main road" }
     ],
     busyTimes: [
@@ -395,7 +563,20 @@ export const parkingSpots: ParkingSpot[] = [
     availabilityDescription: "Often empty but heavy fines apply",
     findingProbability: 65,
     trafficFrequency: [20,20,20,20,25,45,65,85,95,90,85,80,75,70,65,70,75,80,70,55,35,25,20,15],
-    entrances: [
+    images: [
+    `/images/spots/spot_1.jpg`,
+    `/images/spots/spot_2.jpg`,
+  ],
+  availability: [
+    { day: "Monday-Friday", times: ["8:00 AM - 10:00 PM"] },
+    { day: "Saturday-Sunday", times: ["10:00 AM - 8:00 PM"] },
+  ],
+  restrictions: [
+    "No overnight parking",
+    "No parking during events"
+  ],
+  description: "Convenient parking spot located in the heart of the area. Easy access to nearby amenities.",
+  entrances: [
       { name: "Frontage", description: "Roadside near Grand Millennium Hotel" }
     ],
     busyTimes: [
@@ -421,7 +602,20 @@ export const parkingSpots: ParkingSpot[] = [
     availabilityDescription: "Frequent openings but patrols are regular",
     findingProbability: 60,
     trafficFrequency: [10,10,10,10,20,40,60,80,90,85,80,75,70,65,60,65,70,75,65,50,30,20,15,10],
-    entrances: [
+    images: [
+    `/images/spots/spot_1.jpg`,
+    `/images/spots/spot_2.jpg`,
+  ],
+  availability: [
+    { day: "Monday-Friday", times: ["8:00 AM - 10:00 PM"] },
+    { day: "Saturday-Sunday", times: ["10:00 AM - 8:00 PM"] },
+  ],
+  restrictions: [
+    "No overnight parking",
+    "No parking during events"
+  ],
+  description: "Convenient parking spot located in the heart of the area. Easy access to nearby amenities.",
+  entrances: [
       { name: "Side Lane", description: "Opposite Central Market side street" }
     ],
     busyTimes: [
@@ -449,7 +643,20 @@ export const parkingSpots: ParkingSpot[] = [
     availabilityDescription: "Often available but high risk of summons",
     findingProbability: 80,
     trafficFrequency: [5,5,5,5,10,20,40,80,90,85,80,75,70,75,80,85,90,85,70,50,30,20,10,5],
-    entrances: [
+    images: [
+    `/images/spots/spot_1.jpg`,
+    `/images/spots/spot_2.jpg`,
+  ],
+  availability: [
+    { day: "Monday-Friday", times: ["8:00 AM - 10:00 PM"] },
+    { day: "Saturday-Sunday", times: ["10:00 AM - 8:00 PM"] },
+  ],
+  restrictions: [
+    "No overnight parking",
+    "No parking during events"
+  ],
+  description: "Convenient parking spot located in the heart of the area. Easy access to nearby amenities.",
+  entrances: [
       { name: "Roadside", description: "Along SS2/1 – frequent patrols" }
     ],
     busyTimes: [
@@ -475,7 +682,20 @@ export const parkingSpots: ParkingSpot[] = [
     availabilityDescription: "Spots usually free but heavily monitored",
     findingProbability: 60,
     trafficFrequency: [10,10,10,10,15,25,40,60,75,80,85,80,75,70,65,70,75,80,70,50,30,20,15,10],
-    entrances: [
+    images: [
+    `/images/spots/spot_1.jpg`,
+    `/images/spots/spot_2.jpg`,
+  ],
+  availability: [
+    { day: "Monday-Friday", times: ["8:00 AM - 10:00 PM"] },
+    { day: "Saturday-Sunday", times: ["10:00 AM - 8:00 PM"] },
+  ],
+  restrictions: [
+    "No overnight parking",
+    "No parking during events"
+  ],
+  description: "Convenient parking spot located in the heart of the area. Easy access to nearby amenities.",
+  entrances: [
       { name: "Side Lane", description: "Between Jalan 14/1 and Jalan 14/3" }
     ],
     busyTimes: [
@@ -501,7 +721,20 @@ export const parkingSpots: ParkingSpot[] = [
     availabilityDescription: "Often empty but fines apply",
     findingProbability: 65,
     trafficFrequency: [20,20,20,20,25,45,65,85,95,90,85,80,75,70,65,70,75,80,70,55,35,25,20,15],
-    entrances: [
+    images: [
+    `/images/spots/spot_1.jpg`,
+    `/images/spots/spot_2.jpg`,
+  ],
+  availability: [
+    { day: "Monday-Friday", times: ["8:00 AM - 10:00 PM"] },
+    { day: "Saturday-Sunday", times: ["10:00 AM - 8:00 PM"] },
+  ],
+  restrictions: [
+    "No overnight parking",
+    "No parking during events"
+  ],
+  description: "Convenient parking spot located in the heart of the area. Easy access to nearby amenities.",
+  entrances: [
       { name: "Roadside", description: "Opposite commercial shops – heavy patrols" }
     ],
     busyTimes: [
@@ -527,7 +760,20 @@ export const parkingSpots: ParkingSpot[] = [
     availabilityDescription: "Frequent openings but patrols are regular",
     findingProbability: 60,
     trafficFrequency: [10,10,10,10,20,40,60,80,90,85,80,75,70,65,60,65,70,75,65,50,30,20,15,10],
-    entrances: [
+    images: [
+    `/images/spots/spot_1.jpg`,
+    `/images/spots/spot_2.jpg`,
+  ],
+  availability: [
+    { day: "Monday-Friday", times: ["8:00 AM - 10:00 PM"] },
+    { day: "Saturday-Sunday", times: ["10:00 AM - 8:00 PM"] },
+  ],
+  restrictions: [
+    "No overnight parking",
+    "No parking during events"
+  ],
+  description: "Convenient parking spot located in the heart of the area. Easy access to nearby amenities.",
+  entrances: [
       { name: "Frontage", description: "Roadside near banks – vigilant enforcement" }
     ],
     busyTimes: [
@@ -553,7 +799,20 @@ export const parkingSpots: ParkingSpot[] = [
     availabilityDescription: "Rarely full but constant risk of summons",
     findingProbability: 70,
     trafficFrequency: [15,15,15,15,20,35,55,75,85,80,75,70,65,60,55,60,65,70,60,45,30,20,15,10],
-    entrances: [
+    images: [
+    `/images/spots/spot_1.jpg`,
+    `/images/spots/spot_2.jpg`,
+  ],
+  availability: [
+    { day: "Monday-Friday", times: ["8:00 AM - 10:00 PM"] },
+    { day: "Saturday-Sunday", times: ["10:00 AM - 8:00 PM"] },
+  ],
+  restrictions: [
+    "No overnight parking",
+    "No parking during events"
+  ],
+  description: "Convenient parking spot located in the heart of the area. Easy access to nearby amenities.",
+  entrances: [
       { name: "Roadside", description: "Along SS21 – regular patrols" }
     ],
     busyTimes: [
@@ -579,7 +838,20 @@ export const parkingSpots: ParkingSpot[] = [
     availabilityDescription: "Open parking area with moderate availability",
     findingProbability: 65,
     trafficFrequency: [15,15,15,20,35,55,70,85,80,75,70,65,60,65,70,75,80,75,65,50,40,30,20,15],
-    entrances: [
+    images: [
+    `/images/spots/spot_1.jpg`,
+    `/images/spots/spot_2.jpg`,
+  ],
+  availability: [
+    { day: "Monday-Friday", times: ["8:00 AM - 10:00 PM"] },
+    { day: "Saturday-Sunday", times: ["10:00 AM - 8:00 PM"] },
+  ],
+  restrictions: [
+    "No overnight parking",
+    "No parking during events"
+  ],
+  description: "Convenient parking spot located in the heart of the area. Easy access to nearby amenities.",
+  entrances: [
       { name: "Main Entrance", description: "Via main road" }
     ],
     busyTimes: [
@@ -605,7 +877,20 @@ export const parkingSpots: ParkingSpot[] = [
     availabilityDescription: "Moderate availability on weekdays, high on weekends",
     findingProbability: 80,
     trafficFrequency: [20, 15, 10, 10, 15, 20, 30, 60, 80, 90, 85, 75, 70, 65, 60, 55, 50, 45, 40, 35, 30, 25, 22, 20],
-    entrances: [
+    images: [
+    `/images/spots/spot_1.jpg`,
+    `/images/spots/spot_2.jpg`,
+  ],
+  availability: [
+    { day: "Monday-Friday", times: ["8:00 AM - 10:00 PM"] },
+    { day: "Saturday-Sunday", times: ["10:00 AM - 8:00 PM"] },
+  ],
+  restrictions: [
+    "No overnight parking",
+    "No parking during events"
+  ],
+  description: "Convenient parking spot located in the heart of the area. Easy access to nearby amenities.",
+  entrances: [
       {
         name: "Main Roadside Zone",
         description: "Legal street parking along Kampung Pandan Dalam road with clear road markings"
@@ -640,7 +925,20 @@ export const parkingSpots: ParkingSpot[] = [
     availabilityDescription: "Good availability during off-peak hours, limited during morning and evening peak times",
     findingProbability: 85,
     trafficFrequency: [25, 20, 15, 10, 15, 20, 30, 40, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 90, 85, 70, 55, 40, 30],
-    entrances: [
+    images: [
+    `/images/spots/spot_1.jpg`,
+    `/images/spots/spot_2.jpg`,
+  ],
+  availability: [
+    { day: "Monday-Friday", times: ["8:00 AM - 10:00 PM"] },
+    { day: "Saturday-Sunday", times: ["10:00 AM - 8:00 PM"] },
+  ],
+  restrictions: [
+    "No overnight parking",
+    "No parking during events"
+  ],
+  description: "Convenient parking spot located in the heart of the area. Easy access to nearby amenities.",
+  entrances: [
       {
         name: "Main Entrance",
         description: "Enter from Lorong Abdullah street entrance"

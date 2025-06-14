@@ -1,7 +1,7 @@
 "use client"
 
-import { useState, useEffect, useMemo } from "react"
-import { Search, Navigation, AlertTriangle, CheckCircle, Filter, Route, Clock, TrendingUp, Car } from "lucide-react"
+import { useState, useEffect, useMemo, useRef } from "react"
+import { Search, Navigation, AlertTriangle, CheckCircle, Filter, Route, Clock, TrendingUp, Map, BarChart2, Bell, ChevronDown, ChevronUp, Cog, Compass, Delete, DollarSign, FileText, Home, Menu, MessageSquare, QrCode, Ticket, X } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
@@ -12,11 +12,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import GoogleMapComponent from "@/components/GoogleMap"
 import { NavigationSheet } from "@/components/NavigationSheet"
 import AnonymousMessaging from "@/components/AnonymousMessaging"
-import ValetBookingModal from "@/components/ValetBookingModal"
+import CouponReminder, { CouponItem } from "@/components/CouponReminder"
+import LiveParkingUpdates from "@/components/LiveParkingUpdates"
 import { parkingSpots, type ParkingSpot } from "@/lib/parkingData"
 import useGeolocation from "@/hooks/useGeolocation"
 import { calculateDistance, estimateTravelTime, formatDistance } from "@/lib/distanceUtils"
 import { useSubscription } from "@/lib/subscriptionContext"
+import { useToast } from "@/components/ui/use-toast"
 
 // The parking spots data is now imported from lib/parkingData.ts
 
@@ -32,18 +34,66 @@ export default function ParkingFinderApp() {
   
   // Enhanced filtering options
   const [legalFilter, setLegalFilter] = useState<"all" | "legal" | "illegal">("all")
-  const [valetFilter, setValetFilter] = useState<"all" | "valet" | "no-valet">("all")
   
   const [showAnalytics, setShowAnalytics] = useState(false)
   const [mapLoaded, setMapLoaded] = useState(false)
   const [currentTime, setCurrentTime] = useState(new Date())
   const [navigationOpen, setNavigationOpen] = useState(false)
   const [expandedView, setExpandedView] = useState<'map' | 'list'>('map')
-  const [valetModalOpen, setValetModalOpen] = useState(false)
-  const [selectedValetSpot, setSelectedValetSpot] = useState<ParkingSpotWithDistance | null>(null)
+  const [showHeatmap, setShowHeatmap] = useState(false)
+  const mapRef = useRef<any>(null) // Reference to the Google Maps instance
+  const [coupons, setCoupons] = useState<CouponItem[]>([])
+  const [showUpdatesSheet, setShowUpdatesSheet] = useState(false);
+  const [showCouponSheet, setShowCouponSheet] = useState(false);
+  const [showSettingsSheet, setShowSettingsSheet] = useState(false);
+  const [showMoreMenu, setShowMoreMenu] = useState(false);
+  const [showFeatureMenu, setShowFeatureMenu] = useState(false);
+  
+  // Callback functions for the anonymous messaging component
+  const [openMessagesDialog, setOpenMessagesDialog] = useState<(() => void) | null>(null);
+  const [openQRScanner, setOpenQRScanner] = useState<(() => void) | null>(null);
+  const [unreadMessageCount, setUnreadMessageCount] = useState(2); // Show 2 unread messages
   
   // Get subscription status
   const { isSubscribed } = useSubscription()
+  
+  // Note: Coupon handlers already exist later in this file
+  const { toast } = useToast()
+  
+  // Add a new coupon handler
+  const handleAddCoupon = (newCoupon: Omit<CouponItem, "id">) => {
+    const couponWithId = {
+      ...newCoupon,
+      id: `coupon-${Date.now()}-${Math.floor(Math.random() * 1000)}`
+    }
+    
+    console.log("Adding new coupon:", couponWithId); // Debug log
+    
+    // Use functional update to ensure we're working with the latest state
+    setCoupons(prevCoupons => {
+      const updatedCoupons = [...prevCoupons, couponWithId];
+      console.log("Updated coupons:", updatedCoupons); // Debug log
+      return updatedCoupons;
+    });
+    
+    // Show a success toast
+    toast({
+      title: "Coupon Added",
+      description: `${newCoupon.label} at ${newCoupon.location} will expire at ${newCoupon.expiryTime.toLocaleTimeString([], {
+        hour: "2-digit", 
+        minute: "2-digit",
+        hour12: true
+      })}`,
+    });
+    
+    // Close the coupon sheet after adding
+    setShowCouponSheet(false);
+  }
+
+  // Delete coupon handler
+  const handleDeleteCoupon = (id: string) => {
+    setCoupons(prev => prev.filter(coupon => coupon.id !== id))
+  }
   
   // Get user's current location
   const userLocation = useGeolocation()
@@ -101,16 +151,13 @@ export default function ParkingFinderApp() {
       }
       
       // Apply legal status filter
-      if (legalFilter === "legal" && !spot.isLegal) return false;
-      if (legalFilter === "illegal" && spot.isLegal) return false;
-      
-      // Apply valet service filter
-      if (valetFilter === "valet" && !spot.hasValetService) return false;
-      if (valetFilter === "no-valet" && spot.hasValetService) return false;
-      
+      if (legalFilter !== "all") {
+        if (legalFilter === "legal" && !spot.isLegal) return false;
+        if (legalFilter === "illegal" && spot.isLegal) return false;
+      }
       return true;
     });
-  }, [spotsWithDistance, searchQuery, legalFilter, valetFilter]);
+  }, [spotsWithDistance, searchQuery, legalFilter]);
 
   const getProbabilityColor = (probability: number) => {
     if (probability >= 70) return "bg-green-500"
@@ -225,34 +272,6 @@ export default function ParkingFinderApp() {
               </div>
 
               <div className="mb-4">
-                <h3 className="mb-2 text-sm font-medium">Valet Service</h3>
-                <div className="flex gap-2">
-                  <Button
-                    variant={valetFilter === "all" ? "default" : "outline"}
-                    className="flex-1 h-9"
-                    onClick={() => setValetFilter("all")}
-                  >
-                    All
-                  </Button>
-                  <Button
-                    variant={valetFilter === "valet" ? "default" : "outline"}
-                    className="flex-1 h-9"
-                    onClick={() => setValetFilter("valet")}
-                  >
-                    <Car className="w-4 h-4 mr-2" />
-                    With Valet
-                  </Button>
-                  <Button
-                    variant={valetFilter === "no-valet" ? "default" : "outline"}
-                    className="flex-1 h-9"
-                    onClick={() => setValetFilter("no-valet")}
-                  >
-                    No Valet
-                  </Button>
-                </div>
-              </div>
-
-              <div className="mb-4">
                 <h3 className="mb-2 text-sm font-medium">Sort By</h3>
                 <Select defaultValue="distance">
                   <SelectTrigger className="w-full">
@@ -272,7 +291,6 @@ export default function ParkingFinderApp() {
                   variant="outline"
                   onClick={() => {
                     setLegalFilter("all");
-                    setValetFilter("all");
                   }}
                 >
                   Reset All Filters
@@ -283,6 +301,48 @@ export default function ParkingFinderApp() {
         </Sheet>
       </div>
 
+      {/* Map Controls Toolbar (moved out of the map) */}
+      <div className="sticky top-[56px] z-10 bg-white border-b border-gray-200 p-2 flex items-center justify-between shadow-sm">
+        <div className="flex items-center gap-2">
+          <Button
+            size="sm"
+            variant={showHeatmap ? "default" : "outline"}
+            className="text-xs flex items-center h-8"
+            onClick={() => setShowHeatmap(!showHeatmap)}
+          >
+            <BarChart2 className="h-3.5 w-3.5 mr-1" />
+            Traffic Heatmap
+          </Button>
+          
+          <Button
+            size="sm"
+            variant="outline"
+            className="text-xs h-8"
+            onClick={() => setExpandedView(expandedView === 'map' ? 'list' : 'map')}
+          >
+            {expandedView === 'map' ? (
+              <>
+                <Map className="h-3.5 w-3.5 mr-1" />
+                View List
+              </>
+            ) : (
+              <>
+                <Map className="h-3.5 w-3.5 mr-1" />
+                View Map
+              </>
+            )}
+          </Button>
+        </div>
+        
+        <Button 
+          className="rounded-full w-8 h-8 p-0" 
+          variant="outline" 
+          size="icon"
+        >
+          <Navigation className="h-4 w-4" />
+        </Button>
+      </div>
+        
       {/* Google Maps Area */}
       <div 
         className={`relative bg-gray-100 transition-all duration-300 ${expandedView === 'map' ? 'h-[60vh]' : 'h-[20vh]'}`}
@@ -292,32 +352,18 @@ export default function ParkingFinderApp() {
           parkingSpots={filteredSpots} 
           selectedSpotId={selectedSpot?.id} 
           onSpotSelect={(spot) => setSelectedSpot(spot as ParkingSpotWithDistance)}
-          onValetSelect={(spot) => {
-            setSelectedValetSpot(spot as ParkingSpotWithDistance);
-            setValetModalOpen(true);
-          }}
           userLocation={userLocation} 
+          showHeatmap={showHeatmap}
+          onMapLoad={(map) => {
+            mapRef.current = map;
+          }}
         />
-
-        {/* Floating Navigation Button */}
-        <Button className="absolute bottom-6 right-4 rounded-full w-12 h-12 shadow-lg" size="icon">
-          <Navigation className="h-5 w-5" />
-        </Button>
       </div>
 
       {/* Mobile Bottom Sheet */}
       <div className={`bg-white border-t overflow-y-auto transition-all duration-300 ${expandedView === 'list' ? 'flex-1 max-h-[80vh]' : 'max-h-80'}`}>
-        {/* Toggle View Button in Parking Knowledge Base */}
         <div className="flex justify-between items-center p-2 sticky top-0 z-10 bg-white border-b">
-          <h3 className="font-medium text-sm">Parking Knowledge Base</h3>
-          <Button 
-            size="sm"
-            variant="ghost"
-            className="h-8"
-            onClick={() => setExpandedView(expandedView === 'map' ? 'list' : 'map')}
-          >
-            {expandedView === 'map' ? 'Show List' : 'Show Map'}
-          </Button>
+          <h3 className="font-medium text-sm flex items-center h-8">Parking Knowledge Base</h3>
         </div>
         {selectedSpot ? (
           <div className="p-4 mb-20">
@@ -485,30 +531,42 @@ export default function ParkingFinderApp() {
                 </TabsContent>
               </Tabs>
             )}
-
-            <div className="flex gap-2">
+            <Button
+              variant={showHeatmap ? "default" : "outline"}
+              size="sm"
+              onClick={() => {
+                // Simple toggle with minimal extra code
+                setShowHeatmap(!showHeatmap);
+                
+                // Force map to refresh by triggering a quick redraw
+                if (mapRef.current) {
+                  try {
+                    // Brief timeout to let React finish its updates
+                    setTimeout(() => {
+                      if (mapRef.current) {
+                        // Force a redraw of the map
+                        google.maps.event.trigger(mapRef.current, 'resize');
+                      }
+                    }, 10);
+                  } catch (err) {
+                    console.error('Error refreshing map:', err);
+                  }
+                }
+              }}
+              className={showHeatmap ? "bg-primary text-primary-foreground" : "bg-white dark:bg-gray-800"}
+              title={showHeatmap ? "Hide Heatmap" : "Show Heatmap"}
+            >
+              <TrendingUp className="h-4 w-4 mr-1" />
+              <span className="text-xs">{showHeatmap ? "Hide" : "Show"} Heatmap</span>
+            </Button>
+            <div className="flex space-x-2 mt-2">
               <Button 
+                onClick={() => setNavigationOpen(true)} 
                 className="flex-1 h-9 text-sm"
-                onClick={() => setNavigationOpen(true)}
               >
                 <Navigation className="w-4 h-4 mr-2" />
-                Navigate
+                Directions
               </Button>
-              
-              {/* Valet booking button - only shown for spots with valet service */}
-              {selectedSpot.hasValetService && (
-                <Button 
-                  variant="outline" 
-                  className="flex-1 h-9 text-sm"
-                  onClick={() => {
-                    setSelectedValetSpot(selectedSpot);
-                    setValetModalOpen(true);
-                  }}
-                >
-                  <Car className="w-4 h-4 mr-2" />
-                  Book Valet
-                </Button>
-              )}
             </div>
             
             {/* Navigation Sheet with directions and local images */}
@@ -517,13 +575,6 @@ export default function ParkingFinderApp() {
               onOpenChange={setNavigationOpen} 
               spot={selectedSpot} 
               userLocation={userLocation}
-            />
-            
-            {/* Valet Booking Modal */}
-            <ValetBookingModal
-              open={valetModalOpen}
-              onOpenChange={setValetModalOpen}
-              spot={selectedValetSpot}
             />
           </div>
         ) : (
@@ -550,27 +601,9 @@ export default function ParkingFinderApp() {
                               Risk
                             </Badge>
                           )}
-                          
-                          {/* Valet service badge */}
-                          {spot.hasValetService && (
-                            <Badge variant="outline" className="ml-1 text-xs bg-purple-50 text-purple-600 border-purple-200">
-                              <Car className="h-3 w-3 mr-1" />
-                              Valet
-                            </Badge>
-                          )}
                           <span className="text-xs text-muted-foreground">{spot.walkTime}min walk</span>
                         </div>
                         <div className="text-xs text-gray-600">{spot.availabilityDescription}</div>
-                        
-                        {/* Valet badge for list view */}
-                        {spot.hasValetService && (
-                          <div className="flex items-center mt-0.5">
-                            <Badge variant="outline" className="text-[10px] py-0 px-1 h-4 bg-purple-50 text-purple-600 border-purple-200">
-                              <Car className="h-2 w-2 mr-0.5" />
-                              Valet Available
-                            </Badge>
-                          </div>
-                        )}
                       </div>
                       <div className="text-right ml-2">
                         <div
@@ -589,8 +622,151 @@ export default function ParkingFinderApp() {
         )}
       </div>
       
+      {/* Mobile Feature Menu Button - positioned correctly in mobile container */}
+      <div className="fixed bottom-16 right-4 z-30 md:absolute md:bottom-20 md:right-4">
+        {/* Expandable Menu Button */}
+        <div className="relative">
+          <Button 
+            size="icon" 
+            className={`h-12 w-12 rounded-full shadow-lg bg-primary text-primary-foreground transition-all duration-200 ${showFeatureMenu ? 'rotate-45' : ''}`}
+            onClick={() => setShowFeatureMenu(!showFeatureMenu)}
+            aria-label="Toggle feature menu"
+          >
+            {!showFeatureMenu ? (
+              <Menu className="h-6 w-6" />
+            ) : (
+              <X className="h-6 w-6" />
+            )}
+          </Button>
+          
+          {/* Dropdown Feature Menu */}
+          {showFeatureMenu && (
+            <div className="absolute bottom-16 right-0 flex flex-col-reverse space-y-2 space-y-reverse">
+              {/* Coupon Button */}
+              <div className="flex items-center mb-2">
+                <div className="mr-2 bg-white dark:bg-gray-800 shadow-md px-2 py-1 rounded-lg text-sm hidden md:block">
+                  Coupons
+                </div>
+                <Button 
+                  size="icon" 
+                  className="h-10 w-10 rounded-full shadow-md bg-white dark:bg-gray-800 relative"
+                  onClick={() => {
+                    setShowCouponSheet(true);
+                    setShowFeatureMenu(false);
+                  }}
+                >
+                  <Ticket className="h-5 w-5 text-primary" />
+                  {coupons.length > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-blue-500 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs">
+                      {coupons.length}
+                    </span>
+                  )}
+                </Button>
+              </div>
+              
+              {/* Updates Button Removed */}
+              
+              {/* Messages Button */}
+              <div className="flex items-center mb-2">
+                <div className="mr-2 bg-white dark:bg-gray-800 shadow-md px-2 py-1 rounded-lg text-sm hidden md:block">
+                  Messages
+                </div>
+                <Button 
+                  size="icon" 
+                  className="h-10 w-10 rounded-full shadow-md bg-white dark:bg-gray-800 relative"
+                  onClick={() => {
+                    if (openMessagesDialog) openMessagesDialog();
+                    setShowFeatureMenu(false);
+                  }}
+                  disabled={!openMessagesDialog}
+                >
+                  <MessageSquare className="h-5 w-5 text-primary" />
+                  {unreadMessageCount > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs">
+                      {unreadMessageCount}
+                    </span>
+                  )}
+                </Button>
+              </div>
+              
+              {/* QR Scan Button */}
+              <div className="flex items-center mb-2">
+                <div className="mr-2 bg-white dark:bg-gray-800 shadow-md px-2 py-1 rounded-lg text-sm hidden md:block">
+                  Scan QR
+                </div>
+                <Button 
+                  size="icon" 
+                  className="h-10 w-10 rounded-full shadow-md bg-white dark:bg-gray-800"
+                  onClick={() => {
+                    if (openQRScanner) openQRScanner();
+                    setShowFeatureMenu(false);
+                  }}
+                  disabled={!openQRScanner}
+                  aria-label="Scan QR code"
+                >
+                  <QrCode className="h-5 w-5 text-primary" />
+                  {/* No notification badge for QR button */}
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Coupon Reminder Sheet */}
+      <Sheet open={showCouponSheet} onOpenChange={setShowCouponSheet}>
+        <SheetContent side="bottom" className="h-[80vh] overflow-y-auto">
+          <SheetHeader>
+            <SheetTitle className="flex items-center">
+              <Ticket className="mr-2 h-5 w-5" /> 
+              Parking Coupons
+            </SheetTitle>
+          </SheetHeader>
+          <div className="mt-4">
+            <CouponReminder 
+              userCoupons={coupons}
+              onAddCoupon={handleAddCoupon}
+              onDeleteCoupon={handleDeleteCoupon}
+            />
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      {/* Live Updates Sheet */}
+      <Sheet open={showUpdatesSheet} onOpenChange={setShowUpdatesSheet}>
+        <SheetContent side="bottom" className="h-[80vh] overflow-y-auto">
+          <SheetHeader>
+            <SheetTitle className="flex items-center">
+              <Bell className="mr-2 h-5 w-5" /> 
+              Live Parking Updates
+            </SheetTitle>
+          </SheetHeader>
+          <div className="mt-4">
+            <LiveParkingUpdates
+              userLocation={userLocation.latitude && userLocation.longitude ? {
+                lat: userLocation.latitude,
+                lng: userLocation.longitude
+              } : null}
+              parkingSpots={parkingSpots}
+              radius={2}
+              isSubscribed={isSubscribed}
+            />
+          </div>
+        </SheetContent>
+      </Sheet>
+
       {/* Anonymous Messaging System */}
-      <AnonymousMessaging />
+      <AnonymousMessaging 
+        onOpenMessages={(openFn) => {
+          setOpenMessagesDialog(() => openFn);
+        }}
+        onOpenScanner={(openFn) => {
+          setOpenQRScanner(() => openFn);
+        }}
+        onUnreadCountChange={(count) => {
+          setUnreadMessageCount(count);
+        }}
+      />
     </div>
   )
 }
